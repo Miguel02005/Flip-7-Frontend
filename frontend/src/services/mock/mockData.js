@@ -20,8 +20,9 @@ export const MODIFIER_VALUES = {
   TIMES_2: 'x2',
 }
 
-// Number cards: value N appears N times (except 0 = 1 copy, 1 = 1 copy)
-// 0x1, 1x1, 2x2, 3x3, 4x4, 5x5, 6x6, 7x7, 8x8, 9x9, 10x10, 11x11, 12x12
+// Number cards per official rules:
+// One 0, one 1, two 2s, three 3s ... twelve 12s
+// Total: 1+1+2+3+4+5+6+7+8+9+10+11+12 = 79
 const NUMBER_CARDS = [
   { value: 0, count: 1 },
   { value: 1, count: 1 },
@@ -38,21 +39,21 @@ const NUMBER_CARDS = [
   { value: 12, count: 12 },
 ]
 
-// Action cards: 3 copies each
+// Action cards: 3 of each
 const ACTION_CARDS = [
   { type: CARD_TYPES.FREEZE, count: 3 },
   { type: CARD_TYPES.FLIP_THREE, count: 3 },
   { type: CARD_TYPES.SECOND_CHANCE, count: 3 },
 ]
 
-// Modifier cards: 2 copies of each +bonus, 2 copies of x2
+// Modifier cards: 1 of each (+2, +4, +6, +8, +10, x2)
 const MODIFIER_CARDS = [
-  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_2, count: 2 },
-  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_4, count: 2 },
-  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_6, count: 2 },
-  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_8, count: 2 },
-  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_10, count: 2 },
-  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.TIMES_2, count: 2 },
+  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_2, count: 1 },
+  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_4, count: 1 },
+  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_6, count: 1 },
+  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_8, count: 1 },
+  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.PLUS_10, count: 1 },
+  { type: CARD_TYPES.MODIFIER, modifier: MODIFIER_VALUES.TIMES_2, count: 1 },
 ]
 
 let _cardIdCounter = 1

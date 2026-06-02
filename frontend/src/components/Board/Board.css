@@ -1,0 +1,123 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.board__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.board__title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.board__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.board__round-info {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.board__round-info strong {
+  color: var(--text-h);
+}
+
+.board__table {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #1f2028, #16171d);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  min-height: 200px;
+}
+
+.board__controls {
+  width: 100%;
+}
+
+.board__table-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text);
+  font-style: italic;
+  padding: 40px 0;
+}
+
+.board__winner-banner {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #000;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+
+.board__round-summary {
+  padding: 16px 20px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.board__round-summary h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: var(--text-h);
+}
+
+.board__round-summary table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.board__round-summary th,
+.board__round-summary td {
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.board__round-summary th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+
+.board__deck-info {
+  font-size: 12px;
+  color: var(--text);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.board__deck-pile {
+  display: inline-block;
+  width: 32px;
+  height: 46px;
+  background: linear-gradient(135deg, #aa3bff 25%, #6b21a8 25%, #6b21a8 50%, #aa3bff 50%, #aa3bff 75%, #6b21a8 75%);
+  background-size: 10px 10px;
+  border-radius: 4px;
+  border: 1px solid #6b21a8;
+}

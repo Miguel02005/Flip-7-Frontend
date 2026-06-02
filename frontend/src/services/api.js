@@ -40,6 +40,10 @@ export async function stay(params) {
   return (await getApi()).stay(params)
 }
 
+export async function applyAction(params) {
+  return (await getApi()).applyAction(params)
+}
+
 export async function getGameState(params) {
   return (await getApi()).getGameState(params)
 }

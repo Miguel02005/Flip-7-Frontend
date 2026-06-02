@@ -1,0 +1,115 @@
+.game-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 280px;
+}
+
+.game-setup__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.game-setup__subtitle {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.game-setup__players {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.game-setup__player-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.game-setup__player-row input {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #5531d3;
+  color: var(--text-h);
+}
+
+.game-setup__player-row input:focus {
+  outline: 2px solid #aa3bff;
+  outline-offset: 1px;
+}
+
+.game-setup__remove {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.game-setup__remove:hover:not(:disabled) {
+  background: rgba(194, 24, 91, 0.1);
+  color: #c2185b;
+  border-color: #c2185b;
+}
+
+.game-setup__remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.game-setup__add {
+  background: #4139cc;
+  border: 1px dashed var(--border);
+  color: var(--text-h);
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.game-setup__add:hover {
+  background: rgba(170, 59, 255, 0.08);
+  border-color: #aa3bff;
+  color: #aa3bff;
+}
+
+.game-setup__start {
+  background: #aa3bff;
+  color: #fff;
+  border: 1px solid #6b21a8;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.game-setup__start:hover:not(:disabled) {
+  background: #9333ea;
+}
+
+.game-setup__start:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-setup__error {
+  font-size: 13px;
+  color: #c2185b;
+  margin-top: 4px;
+}

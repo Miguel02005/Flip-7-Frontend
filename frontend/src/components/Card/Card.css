@@ -1,0 +1,107 @@
+.card {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 100px;
+  border-radius: 8px;
+  background: #fff;
+  border: 2px solid #2e303a;
+  color: #08060d;
+  font-family: var(--heading);
+  font-weight: 600;
+  font-size: 16px;
+  padding: 4px;
+  box-sizing: border-box;
+  user-select: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.card .card-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  line-height: 1;
+}
+
+.card .card-value {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 4px 0 2px;
+  text-align: center;
+}
+
+.card--number {
+  background: #fff;
+  color: #08060d;
+}
+
+.card--modifier {
+  background: #ffd86b;
+  color: #5a3a00;
+  border-color: #b8860b;
+}
+
+.card--action-freeze {
+  background: #d4ecff;
+  color: #064e8a;
+  border-color: #1976d2;
+}
+
+.card--action-flip-three {
+  background: #ffe0e6;
+  color: #8a0640;
+  border-color: #c2185b;
+}
+
+.card--action-second-chance {
+  background: #d8f5d0;
+  color: #1b5e20;
+  border-color: #2e7d32;
+}
+
+.card--small {
+  width: 52px;
+  height: 76px;
+  font-size: 12px;
+}
+
+.card--small .card-value {
+  font-size: 14px;
+}
+
+.card--small .card-label {
+  font-size: 8px;
+}
+
+.card--back {
+  background: linear-gradient(135deg, #aa3bff 25%, #6b21a8 25%, #6b21a8 50%, #aa3bff 50%, #aa3bff 75%, #6b21a8 75%);
+  background-size: 12px 12px;
+  color: transparent;
+  border-color: #6b21a8;
+}
+
+.card--clickable {
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.card--clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+}
+
+.card--selected {
+  outline: 3px solid #aa3bff;
+  outline-offset: 2px;
+}
+
+.card--highlighted {
+  outline: 3px solid #c2185b;
+  outline-offset: 2px;
+}

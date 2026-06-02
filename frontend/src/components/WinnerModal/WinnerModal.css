@@ -1,0 +1,82 @@
+.winner-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 100;
+  animation: fadein 0.3s ease;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.winner-modal__content {
+  background: var(--bg);
+  color: var(--text-h);
+  border-radius: 14px;
+  padding: 30px 40px;
+  text-align: center;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.winner-modal__title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: #08060d;
+}
+
+.winner-modal__name {
+  font-size: 24px;
+  color: #aa3bff;
+  margin: 0 0 8px;
+}
+
+.winner-modal__score {
+  font-size: 18px;
+  color: var(--text);
+  margin: 0 0 20px;
+}
+
+.winner-modal__scores {
+  margin-top: 12px;
+  font-size: 14px;
+  text-align: left;
+  display: inline-block;
+}
+
+.winner-modal__scores div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.winner-modal__scores strong {
+  color: var(--text-h);
+}
+
+.winner-modal__close {
+  margin-top: 20px;
+  background: #aa3bff;
+  color: #fff;
+  border: 1px solid #6b21a8;
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+}
