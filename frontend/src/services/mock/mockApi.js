@@ -583,13 +583,25 @@ export async function applyAction({ gameId, sourcePlayerId, targetId }) {
   if (maybeEndRound()) {
     return serializeState(events)
   }
-  // After the action resolves, the turn returns to the source player if they
-  // are still active. Otherwise advance.
-  const source = getPlayer(sourcePlayerId)
-  if (source && source.status === PLAYER_STATUS.ACTIVE) {
-    _state.currentPlayerId = source.id
-  } else {
+  // After the action resolves, the turn outcome depends on the action type
+  // and whether the source player targeted themselves or another player:
+  //   - Flip Three used on ANOTHER player: the source has already taken their
+  //     turn action. Turn advances to the next player immediately.
+  //   - Flip Three used on SELF, or any other action (Freeze on self):
+  //     the turn returns to the source player if they are still active,
+  //     otherwise advance.
+  const isFlipThreeOnOther =
+    pending.type === CARD_TYPES.FLIP_THREE && targetId !== sourcePlayerId
+
+  if (isFlipThreeOnOther) {
     advanceTurn()
+  } else {
+    const source = getPlayer(sourcePlayerId)
+    if (source && source.status === PLAYER_STATUS.ACTIVE) {
+      _state.currentPlayerId = source.id
+    } else {
+      advanceTurn()
+    }
   }
   return serializeState(events)
 }
