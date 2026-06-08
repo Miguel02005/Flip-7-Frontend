@@ -9,25 +9,28 @@ export default function ScoreBoard({ players, winThreshold = 200 }) {
   return (
     <div className="score-board" data-testid="score-board">
       <div className="score-board__title">Scoreboard</div>
-      {sorted.map((p) => (
-        <div
-          key={p.id}
-          className={
-            'score-board__row' +
-            (p.totalScore === leaderScore && leaderScore > 0
-              ? ' score-board__row--leader'
-              : '')
-          }
-        >
-          <span className="score-board__name">{p.name}</span>
-          <span>
-            <span className="score-board__total">{p.totalScore}</span>
-            <span className="score-board__round">
-              /{winThreshold}
+      {sorted.map((p) => {
+        const isLeader = p.totalScore === leaderScore && leaderScore > 0
+        const isBusted = p.status === 'BUSTED'
+        const rowClass = [
+          'score-board__row',
+          isLeader ? 'score-board__row--leader' : '',
+          isBusted ? 'score-board__row--busted' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')
+        return (
+          <div key={p.id} className={rowClass}>
+            <span className="score-board__name">{p.name}</span>
+            <span>
+              <span className="score-board__total">{p.totalScore}</span>
+              <span className="score-board__round">
+                /{winThreshold}
+              </span>
             </span>
-          </span>
-        </div>
-      ))}
+          </div>
+        )
+      })}
     </div>
   )
 }

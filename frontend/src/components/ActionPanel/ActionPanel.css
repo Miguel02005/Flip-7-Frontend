@@ -102,3 +102,48 @@
 .btn--success:hover:not(:disabled) {
   background: #256b29;
 }
+
+/* ─── Action panel: Draw (green pill) and Stay (outline) ─── */
+
+.btn__icon {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.btn--draw {
+  background: linear-gradient(180deg, #2e7d32, #1b5e20);
+  color: #ffffff;
+  border: 1px solid #1b5e20;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn--draw:hover:not(:disabled) {
+  background: linear-gradient(180deg, #388e3c, #256b29);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(27, 94, 32, 0.4);
+}
+
+.btn--stay {
+  background: transparent;
+  color: var(--text-h);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.btn--stay:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: var(--text);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}

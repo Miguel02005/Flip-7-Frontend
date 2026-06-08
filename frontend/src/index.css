@@ -11,6 +11,14 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
+  /* Flip 7 design tokens */
+  --gold: #ffd86b;
+  --gold-strong: #ffb347;
+  --felt: #1f4d2e;
+  --felt-dark: #0f2a1a;
+  --ice: #74b9ff;
+  --ice-soft: rgba(116, 185, 255, 0.15);
+
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
@@ -108,4 +116,91 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Global keyframes shared by Card, PlayerZone, ActionPanel, HomePage.
+   Keep durations under 2s and avoid harsh repeats.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 216, 107, 0.55),
+      0 0 12px 2px rgba(255, 216, 107, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(255, 216, 107, 0.15),
+      0 0 22px 6px rgba(255, 216, 107, 0.55);
+  }
+}
+
+@keyframes freeze-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(116, 185, 255, 0.65);
+    border-color: #74b9ff;
+  }
+  60% {
+    box-shadow: 0 0 0 14px rgba(116, 185, 255, 0);
+    border-color: #a3d2ff;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(116, 185, 255, 0);
+    border-color: #74b9ff;
+  }
+}
+
+@keyframes snowflake-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-6px); }
+  20% { transform: translateX(6px); }
+  30% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  50% { transform: translateX(-3px); }
+  60% { transform: translateX(3px); }
+  70% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  90% { transform: translateX(-1px); }
+}
+
+@keyframes bust-fade {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes card-float {
+  0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  50% { transform: translateY(-14px) rotate(calc(var(--rot, 0deg) + 4deg)); }
 }

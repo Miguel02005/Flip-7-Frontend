@@ -41,6 +41,17 @@
   color: #ff8c00;
 }
 
+.score-board__row--busted {
+  opacity: 0.5;
+  text-decoration: line-through;
+  text-decoration-color: #c2185b;
+  text-decoration-thickness: 2px;
+}
+
+.score-board__row--busted .score-board__name {
+  color: var(--text);
+}
+
 .score-board__name {
   color: var(--text-h);
 }

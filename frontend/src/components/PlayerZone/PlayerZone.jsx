@@ -1,6 +1,11 @@
-import { CARD_TYPES, PLAYER_STATUS } from '../../services/mock/mockData.js'
+import { useEffect, useRef, useState } from 'react'
+import { PLAYER_STATUS } from '../../services/mock/mockData.js'
+import { useGame } from '../../store/gameContext.jsx'
 import Card from '../Card/Card.jsx'
 import './PlayerZone.css'
+
+const FREEZE_DURATION_MS = 1800
+const BUST_DURATION_MS = 800
 
 function statusLabel(status) {
   if (status === PLAYER_STATUS.BUSTED) return 'BUSTED'
@@ -27,6 +32,39 @@ export default function PlayerZone({
   isTargetable,
   onTargetClick,
 }) {
+  const { events } = useGame()
+  const [frozen, setFrozen] = useState(false)
+  const [bustedAnim, setBustedAnim] = useState(false)
+  const seenEventsRef = useRef([])
+
+  useEffect(() => {
+    if (!events || events.length === 0) return
+    const prev = seenEventsRef.current
+    const newEvents = events.filter((e) => !prev.includes(e))
+    seenEventsRef.current = events
+
+    if (newEvents.length === 0) return
+
+    const freezeEvent = newEvents.find(
+      (e) => e.type === 'FREEZE' && e.playerId === player.id
+    )
+    const bustEvent = newEvents.find(
+      (e) => e.type === 'BUST' && e.playerId === player.id
+    )
+
+    if (freezeEvent) {
+      setFrozen(true)
+      const t = setTimeout(() => setFrozen(false), FREEZE_DURATION_MS)
+      return () => clearTimeout(t)
+    }
+    if (bustEvent) {
+      setBustedAnim(true)
+      const t = setTimeout(() => setBustedAnim(false), BUST_DURATION_MS)
+      return () => clearTimeout(t)
+    }
+    return undefined
+  }, [events, player.id])
+
   if (!player) return null
 
   const hand = player.hand || []
@@ -35,6 +73,8 @@ export default function PlayerZone({
     statusClass(player.status),
     isCurrent ? 'player-zone--current' : '',
     isTargetable ? 'player-zone--target' : '',
+    frozen ? 'player-zone--frozen' : '',
+    bustedAnim ? 'player-zone--busted-anim' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -84,6 +124,17 @@ export default function PlayerZone({
           ))
         )}
       </div>
+
+      {frozen && (
+        <span className="player-zone__snowflake" aria-hidden="true">
+          ❄
+        </span>
+      )}
+      {bustedAnim && (
+        <span className="player-zone__bust-text" aria-hidden="true">
+          BUST!
+        </span>
+      )}
     </div>
   )
 }

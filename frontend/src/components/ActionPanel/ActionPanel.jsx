@@ -114,19 +114,21 @@ export default function ActionPanel({
       </div>
       <div className="action-panel__buttons">
         <button
-          className="btn btn--primary"
+          className="btn btn--draw"
           onClick={onDraw}
           disabled={loading}
           data-testid="draw-card"
         >
-          {loading ? 'Drawing...' : 'Draw Card'}
+          <span className="btn__icon" aria-hidden="true">＋</span>
+          {loading ? 'Drawing…' : 'Draw Card'}
         </button>
         <button
-          className="btn btn--secondary"
+          className="btn btn--stay"
           onClick={onStay}
           disabled={loading}
           data-testid="stay"
         >
+          <span className="btn__icon" aria-hidden="true">✋</span>
           Stay
         </button>
       </div>
