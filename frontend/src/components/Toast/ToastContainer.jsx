@@ -28,7 +28,7 @@ export default function ToastContainer() {
           <button
             className="toast__close"
             onClick={() => removeToast(t.id)}
-            aria-label="Dismiss"
+            aria-label="Cerrar"
           >
             ✕
           </button>

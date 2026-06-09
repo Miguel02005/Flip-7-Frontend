@@ -1,3 +1,4 @@
+import { PLAYER_STATUS } from '../../config/api.js'
 import './ScoreBoard.css'
 
 export default function ScoreBoard({ players, winThreshold = 200 }) {
@@ -8,10 +9,10 @@ export default function ScoreBoard({ players, winThreshold = 200 }) {
 
   return (
     <div className="score-board" data-testid="score-board">
-      <div className="score-board__title">Scoreboard</div>
+      <div className="score-board__title">Marcador</div>
       {sorted.map((p) => {
         const isLeader = p.totalScore === leaderScore && leaderScore > 0
-        const isBusted = p.status === 'BUSTED'
+        const isBusted = p.status === PLAYER_STATUS.BUSTED
         const rowClass = [
           'score-board__row',
           isLeader ? 'score-board__row--leader' : '',
@@ -24,9 +25,7 @@ export default function ScoreBoard({ players, winThreshold = 200 }) {
             <span className="score-board__name">{p.name}</span>
             <span>
               <span className="score-board__total">{p.totalScore}</span>
-              <span className="score-board__round">
-                /{winThreshold}
-              </span>
+              <span className="score-board__round">/{winThreshold}</span>
             </span>
           </div>
         )

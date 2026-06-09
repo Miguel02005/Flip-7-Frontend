@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGame } from '../store/gameContext.jsx'
-import { getHistory } from '../services/api.js'
+import { getGameState } from '../services/api.js'
 
 export default function HistoryPage() {
   const { gameId } = useGame()
@@ -17,8 +17,14 @@ export default function HistoryPage() {
         return
       }
       try {
-        const h = await getHistory({ gameId })
-        if (!cancelled) setHistory(h)
+        const state = await getGameState({ gameId })
+        if (cancelled) return
+        // Adaptamos el shape de GameResponse al formato que la UI espera:
+        // { winner, rounds: [{ roundNumber, scores: [...] }] }
+        setHistory({
+          winner: state.winner,
+          rounds: state.roundHistory || [],
+        })
       } catch (err) {
         if (!cancelled) setError(err.message)
       }
@@ -32,10 +38,10 @@ export default function HistoryPage() {
   if (!gameId) {
     return (
       <div style={{ padding: 32 }} data-testid="history-page">
-        <h1>History</h1>
-        <p>No game in progress.</p>
+        <h1>Historial</h1>
+        <p>No hay partida en curso.</p>
         <button onClick={() => navigate('/')} className="btn btn--primary">
-          Back to Home
+          Volver al inicio
         </button>
       </div>
     )
@@ -43,18 +49,19 @@ export default function HistoryPage() {
 
   return (
     <div style={{ padding: 32 }} data-testid="history-page">
-      <h1>Game History</h1>
+      <h1>Historial de la partida</h1>
       {error && <p style={{ color: '#c2185b' }}>Error: {error}</p>}
       {history && (
         <>
           {history.winner && (
             <div className="board__winner-banner" data-testid="history-winner">
-              🏆 {history.winner.name} won with {history.winner.totalScore} points.
+              🏆 {history.winner.name} ganó con {history.winner.totalScore}{' '}
+              puntos.
             </div>
           )}
-          <h2>Rounds</h2>
+          <h2>Rondas</h2>
           {history.rounds.length === 0 ? (
-            <p>No rounds played yet.</p>
+            <p>Aún no se han jugado rondas.</p>
           ) : (
             <table
               style={{
@@ -66,30 +73,83 @@ export default function HistoryPage() {
             >
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid var(--border)' }}>Round</th>
-                  <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid var(--border)' }}>Player</th>
-                  <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid var(--border)' }}>Result</th>
-                  <th style={{ textAlign: 'right', padding: 8, borderBottom: '1px solid var(--border)' }}>Score</th>
+                  <th
+                    style={{
+                      textAlign: 'left',
+                      padding: 8,
+                      borderBottom: '1px solid var(--border)',
+                    }}
+                  >
+                    Ronda
+                  </th>
+                  <th
+                    style={{
+                      textAlign: 'left',
+                      padding: 8,
+                      borderBottom: '1px solid var(--border)',
+                    }}
+                  >
+                    Jugador
+                  </th>
+                  <th
+                    style={{
+                      textAlign: 'left',
+                      padding: 8,
+                      borderBottom: '1px solid var(--border)',
+                    }}
+                  >
+                    Resultado
+                  </th>
+                  <th
+                    style={{
+                      textAlign: 'right',
+                      padding: 8,
+                      borderBottom: '1px solid var(--border)',
+                    }}
+                  >
+                    Puntaje
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {history.rounds.flatMap((r) =>
                   r.scores.map((s, idx) => (
-                    <tr key={`${r.round}-${s.playerId}`}>
-                      <td style={{ padding: 8, borderBottom: '1px solid var(--border)' }}>
-                        {idx === 0 ? r.round : ''}
+                    <tr key={`${r.roundNumber}-${s.playerId}`}>
+                      <td
+                        style={{
+                          padding: 8,
+                          borderBottom: '1px solid var(--border)',
+                        }}
+                      >
+                        {idx === 0 ? r.roundNumber : ''}
                       </td>
-                      <td style={{ padding: 8, borderBottom: '1px solid var(--border)' }}>
+                      <td
+                        style={{
+                          padding: 8,
+                          borderBottom: '1px solid var(--border)',
+                        }}
+                      >
                         {s.playerName}
                       </td>
-                      <td style={{ padding: 8, borderBottom: '1px solid var(--border)' }}>
+                      <td
+                        style={{
+                          padding: 8,
+                          borderBottom: '1px solid var(--border)',
+                        }}
+                      >
                         {s.flippedSeven
                           ? '⭐ Flip 7'
                           : s.busted
-                          ? 'Bust'
-                          : 'Stayed'}
+                          ? 'Eliminado'
+                          : 'Plantado'}
                       </td>
-                      <td style={{ padding: 8, borderBottom: '1px solid var(--border)', textAlign: 'right' }}>
+                      <td
+                        style={{
+                          padding: 8,
+                          borderBottom: '1px solid var(--border)',
+                          textAlign: 'right',
+                        }}
+                      >
                         {s.score}
                       </td>
                     </tr>
@@ -101,8 +161,11 @@ export default function HistoryPage() {
         </>
       )}
       <div style={{ marginTop: 20 }}>
-        <button onClick={() => navigate('/')} className="btn btn--secondary">
-          Back to Home
+        <button
+          onClick={() => navigate('/')}
+          className="btn btn--secondary"
+        >
+          Volver al inicio
         </button>
         {history && history.rounds.length > 0 && (
           <button
@@ -110,7 +173,7 @@ export default function HistoryPage() {
             className="btn btn--primary"
             style={{ marginLeft: 8 }}
           >
-            Back to Game
+            Volver a la partida
           </button>
         )}
       </div>

@@ -1,53 +1,35 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// FLIP 7  —  API Facade
+// Flip 7 — Fachada de la API
 //
-// This is the ONLY file the rest of the app imports for backend calls.
-// Controlled by VITE_USE_MOCK env variable.
-//
-// To switch to real backend:
-//   1. Set VITE_USE_MOCK=false in .env.production
-//   2. (Optional) Delete src/services/mock/ folder
-//   3. Done — zero changes anywhere else in the codebase.
+// Este es el ÚNICO archivo que el resto de la app importa para hablar con el
+// backend. Re-exporta las funciones de realApi.js con la misma firma que antes
+// para mantener compatibilidad con el código existente.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+import { getGameState } from './realApi.js'
 
-let _api = null
+export {
+  createGame,
+  startRound,
+  drawCard,
+  stay,
+  applyAction,
+  getGameState,
+  getFinishedGames,
+  getFinishedGame,
+} from './realApi.js'
 
-async function getApi() {
-  if (_api) return _api
-  if (USE_MOCK) {
-    _api = await import('./mock/mockApi.js')
-  } else {
-    _api = await import('./realApi.js')
+/**
+ * Alias histórico: getHistory se mantiene para HistoryPage.
+ * El backend expone el historial en GameResponse.roundHistory, así que
+ * getHistory es solo un wrapper de getGameState que devuelve el slice
+ * relevante (rondas + ganador).
+ */
+export async function getHistory({ gameId }) {
+  const state = await getGameState({ gameId })
+  return {
+    winner: state.winner,
+    rounds: state.roundHistory || [],
   }
-  return _api
 }
 
-export async function createGame(params) {
-  return (await getApi()).createGame(params)
-}
-
-export async function startRound(params) {
-  return (await getApi()).startRound(params)
-}
-
-export async function drawCard(params) {
-  return (await getApi()).drawCard(params)
-}
-
-export async function stay(params) {
-  return (await getApi()).stay(params)
-}
-
-export async function applyAction(params) {
-  return (await getApi()).applyAction(params)
-}
-
-export async function getGameState(params) {
-  return (await getApi()).getGameState(params)
-}
-
-export async function getHistory(params) {
-  return (await getApi()).getHistory(params)
-}

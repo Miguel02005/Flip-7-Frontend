@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:api": "node --test tests/integration/api.spec.mjs"
   },
   "dependencies": {
     "react": "^19.2.6",

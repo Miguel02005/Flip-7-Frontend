@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGame, useGameActions } from '../store/gameContext.jsx'
+import { STATUS, PLAYER_STATUS } from '../config/api.js'
 import Board from '../components/Board/Board.jsx'
 import ActionPanel from '../components/ActionPanel/ActionPanel.jsx'
 import GameSetup from '../components/GameSetup/GameSetup.jsx'
 import ScoreBoard from '../components/ScoreBoard/ScoreBoard.jsx'
 import WinnerModal from '../components/WinnerModal/WinnerModal.jsx'
-import { PLAYER_STATUS } from '../services/mock/mockData.js'
 
 export default function GamePage() {
   const game = useGame()
@@ -19,25 +19,21 @@ export default function GamePage() {
     resetGame,
   } = useGameActions()
   const navigate = useNavigate()
-  const [autoAdvanceTimer, setAutoAdvanceTimer] = useState(null)
+  // ID del temporizador de auto-avance. Usamos useRef (no useState) porque
+  // no necesitamos repintar al asignarlo: solo lo usamos para cancelarlo
+  // desde handleStartNext cuando el usuario hace clic manualmente.
+  const autoAdvanceTimerRef = useRef(null)
 
-  // Auto-start a round once the game has been created
+  // Avance automático a la siguiente ronda después de ROUND_END (5 s)
   useEffect(() => {
-    if (game.status === 'WAITING' && game.gameId) {
-      // Don't auto-start — let the user click "Start Round" after seeing setup
-    }
-  }, [game.status, game.gameId])
-
-  // Auto-advance to the next round after ROUND_END
-  useEffect(() => {
-    if (game.status === 'ROUND_END') {
+    if (game.status === STATUS.ROUND_END) {
       const t = setTimeout(() => {
         startRound()
       }, 5000)
-      setAutoAdvanceTimer(t)
+      autoAdvanceTimerRef.current = t
       return () => {
         clearTimeout(t)
-        setAutoAdvanceTimer(null)
+        autoAdvanceTimerRef.current = null
       }
     }
     return undefined
@@ -64,16 +60,16 @@ export default function GamePage() {
   const handleStart = async (playerNames) => {
     const result = await createGame(playerNames)
     if (result && result.gameId) {
-      // Pass the new gameId explicitly so startRound doesn't read a stale
-      // gameId from the context closure (which still holds the pre-create state).
+      // Pasamos el gameId explícitamente para que startRound no lea un valor
+      // obsoleto del contexto (que aún contiene el estado pre-creación).
       await startRound(result.gameId)
     }
   }
 
   const handleStartNext = () => {
-    if (autoAdvanceTimer) {
-      clearTimeout(autoAdvanceTimer)
-      setAutoAdvanceTimer(null)
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current)
+      autoAdvanceTimerRef.current = null
     }
     startRound()
   }
@@ -87,7 +83,7 @@ export default function GamePage() {
     applyAction(targetId)
   }
 
-  // No game yet — show setup
+  // No hay partida aún: mostrar configuración
   if (!game.gameId) {
     return (
       <div className="game-page" style={{ padding: 16 }}>
@@ -113,13 +109,18 @@ export default function GamePage() {
         status={game.status}
         currentRound={game.currentRound}
         winner={game.winner}
-        deckRemaining={game.deckRemaining}
         roundHistory={game.roundHistory}
         loading={game.loading}
-        events={game.events}
         onPlayerTargetClick={handlePlayerTarget}
       >
-        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 12,
+            alignItems: 'flex-start',
+            flexWrap: 'wrap',
+          }}
+        >
           <ScoreBoard players={game.players} />
         </div>
       </Board>
@@ -140,7 +141,7 @@ export default function GamePage() {
         />
       </div>
 
-      {game.status === 'GAME_OVER' && game.winner && (
+      {game.status === STATUS.GAME_OVER && game.winner && (
         <WinnerModal
           winner={game.winner}
           players={game.players}
@@ -164,7 +165,7 @@ export default function GamePage() {
           className="btn btn--secondary"
           data-testid="nav-history"
         >
-          View History
+          Ver historial
         </button>
         <button
           onClick={handleNewGame}
@@ -172,7 +173,7 @@ export default function GamePage() {
           style={{ marginLeft: 8 }}
           data-testid="reset-game"
         >
-          Reset Game
+          Reiniciar partida
         </button>
       </div>
     </div>

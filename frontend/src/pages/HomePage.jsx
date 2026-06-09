@@ -43,7 +43,8 @@ export default function HomePage() {
           <span className="lobby__title-seven">7</span>
         </h1>
         <p className="lobby__tagline">
-          A push-your-luck card game. First to 200 points across rounds wins.
+          Un juego de cartas de "arriesgarte a más". El primero en llegar a 200
+          puntos en rondas gana.
         </p>
         <div className="lobby__actions">
           <button
@@ -52,45 +53,51 @@ export default function HomePage() {
             data-testid="home-new-game"
           >
             <span className="lobby__play-icon" aria-hidden="true">▶</span>
-            Play
+            Jugar
           </button>
           {gameId && status !== 'GAME_OVER' && status !== 'IDLE' && (
             <button onClick={continueGame} className="btn lobby__secondary">
-              Continue Game
+              Continuar partida
             </button>
           )}
           {gameId && (
             <button onClick={viewHistory} className="btn lobby__secondary">
-              View History
+              Ver historial
             </button>
           )}
         </div>
         <div className="lobby__howto">
-          <h2>How to play</h2>
+          <h2>Cómo jugar</h2>
           <ul>
             <li>
-              <span className="lobby__howto-tag lobby__howto-tag--deal">Deal</span>
-              Each round, the dealer rotates left and deals one face-up card per player.
+              <span className="lobby__howto-tag lobby__howto-tag--deal">Repartir</span>
+              Cada ronda, el repartidor rota a la izquierda y reparte una carta
+              boca arriba a cada jugador.
             </li>
             <li>
-              <span className="lobby__howto-tag lobby__howto-tag--draw">Draw</span>
-              On your turn, choose <strong>Draw</strong> to add a card or <strong>Stay</strong> to bank your points.
+              <span className="lobby__howto-tag lobby__howto-tag--draw">Robar</span>
+              En tu turno, elige <strong>Robar</strong> para añadir una carta o{' '}
+              <strong>Plantarte</strong> para asegurar tus puntos.
             </li>
             <li>
-              <span className="lobby__howto-tag lobby__howto-tag--bust">Bust</span>
-              Draw a duplicate number and you bust — losing all round points.
+              <span className="lobby__howto-tag lobby__howto-tag--bust">Eliminado</span>
+              Roba un número duplicado y quedas eliminado: pierdes todos los
+              puntos de la ronda.
             </li>
             <li>
               <span className="lobby__howto-tag lobby__howto-tag--flip7">Flip 7</span>
-              Collect 7 unique numbers for a <strong>+15 bonus</strong> and instant round end.
+              Consigue 7 números únicos para un <strong>bono de +15</strong> y
+              fin instantáneo de la ronda.
             </li>
             <li>
-              <span className="lobby__howto-tag lobby__howto-tag--action">Action</span>
-              Freeze, Flip Three, and Second Chance can be aimed at any active player.
+              <span className="lobby__howto-tag lobby__howto-tag--action">Acción</span>
+              Freeze, Flip Three y Second Chance pueden dirigirse a
+              cualquier jugador activo.
             </li>
             <li>
               <span className="lobby__howto-tag lobby__howto-tag--win">200</span>
-              First player to <strong>200 cumulative points</strong> wins at the end of a round.
+              El primer jugador en alcanzar <strong>200 puntos acumulados</strong>{' '}
+              gana al final de una ronda.
             </li>
           </ul>
         </div>

@@ -17,7 +17,7 @@ function readStoredTheme() {
     const stored = window.localStorage.getItem(THEME_KEY)
     if (stored === THEME_DARK || stored === THEME_LIGHT) return stored
   } catch {
-    /* localStorage may be unavailable (e.g. private mode); fall through */
+    /* localStorage puede no estar disponible (p. ej. modo privado); fallback */
   }
   return THEME_LIGHT
 }
@@ -36,14 +36,14 @@ function applyTheme(theme) {
 function ThemeToggle() {
   const [theme, setTheme] = useState(readStoredTheme)
 
-  // Apply theme synchronously before paint to avoid a flash of the wrong
-  // palette when navigating between pages or on first load.
+  // Aplica el tema sincrónicamente antes del repintado para evitar parpadeo
+  // al navegar entre páginas o en la carga inicial.
   useLayoutEffect(() => {
     applyTheme(theme)
     try {
       window.localStorage.setItem(THEME_KEY, theme)
     } catch {
-      /* ignore storage errors */
+      /* ignorar errores de almacenamiento */
     }
   }, [theme])
 
@@ -57,8 +57,8 @@ function ThemeToggle() {
       type="button"
       className="theme-toggle"
       onClick={toggle}
-      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-      title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-label={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+      title={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
       data-testid="theme-toggle"
     >
       <span aria-hidden="true">{isDark ? '☀' : '🌙'}</span>

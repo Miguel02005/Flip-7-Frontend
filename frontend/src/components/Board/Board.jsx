@@ -1,3 +1,4 @@
+import { STATUS, STATUS_LABELS } from '../../config/api.js'
 import PlayerZone from '../PlayerZone/PlayerZone.jsx'
 import './Board.css'
 
@@ -9,19 +10,14 @@ export default function Board({
   status,
   currentRound,
   winner,
-  deckRemaining,
   roundHistory,
-  loading,
   onPlayerTargetClick,
   children,
 }) {
-  const lastRound = roundHistory && roundHistory.length > 0
-    ? roundHistory[roundHistory.length - 1]
-    : null
-
-  const sourceName = pendingAction
-    ? players.find((p) => p.id === pendingAction.sourcePlayerId)?.name
-    : null
+  const lastRound =
+    roundHistory && roundHistory.length > 0
+      ? roundHistory[roundHistory.length - 1]
+      : null
 
   return (
     <div className="board" data-testid="board">
@@ -30,33 +26,31 @@ export default function Board({
           <div className="board__title">Flip 7</div>
           {currentRound > 0 && (
             <div className="board__round-info">
-              Round <strong>{currentRound}</strong> ·{' '}
-              <span data-testid="game-status">{statusLabel(status)}</span>
+              Ronda <strong>{currentRound}</strong> ·{' '}
+              <span data-testid="game-status">
+                {STATUS_LABELS[status] || status}
+              </span>
             </div>
           )}
-          <div className="board__deck-info">
-            <span className="board__deck-pile" />
-            <span>Cards in deck: <strong>{deckRemaining}</strong></span>
-          </div>
         </div>
         {children}
       </div>
 
-      {status === 'GAME_OVER' && winner && (
+      {status === STATUS.GAME_OVER && winner && (
         <div className="board__winner-banner" data-testid="winner-banner">
-          🏆 {winner.name} wins with {winner.totalScore} points!
+          🏆 ¡{winner.name} gana con {winner.totalScore} puntos!
         </div>
       )}
 
-      {status === 'ROUND_END' && lastRound && (
+      {status === STATUS.ROUND_END && lastRound && (
         <div className="board__round-summary" data-testid="round-summary">
-          <h3>Round {lastRound.round} Summary</h3>
+          <h3>Resumen de la ronda {lastRound.roundNumber}</h3>
           <table>
             <thead>
               <tr>
-                <th>Player</th>
-                <th>Result</th>
-                <th>Round Score</th>
+                <th>Jugador</th>
+                <th>Resultado</th>
+                <th>Puntaje de ronda</th>
               </tr>
             </thead>
             <tbody>
@@ -74,8 +68,8 @@ export default function Board({
                         {s.flippedSeven
                           ? '⭐ Flip 7'
                           : s.busted
-                          ? 'Bust'
-                          : 'Stayed'}
+                          ? 'Eliminado'
+                          : 'Plantado'}
                       </span>
                     </td>
                     <td className="board__round-score">{s.score}</td>
@@ -90,14 +84,14 @@ export default function Board({
       <div className="board__table" data-testid="board-table">
         {players.length === 0 ? (
           <div className="board__table-empty">
-            No players yet — start a game using the setup card above.
+            Aún no hay jugadores; inicia una partida con el panel de arriba.
           </div>
         ) : (
           players.map((p) => (
             <PlayerZone
               key={p.id}
               player={p}
-              isCurrent={p.id === currentPlayerId && status === 'IN_ROUND'}
+              isCurrent={p.id === currentPlayerId && status === STATUS.IN_ROUND}
               isDealer={p.id === dealerId}
               isTargetable={
                 !!pendingAction &&
@@ -111,14 +105,4 @@ export default function Board({
       </div>
     </div>
   )
-}
-
-function statusLabel(status) {
-  switch (status) {
-    case 'IN_ROUND': return 'In progress'
-    case 'ROUND_END': return 'Round over'
-    case 'GAME_OVER': return 'Game over'
-    case 'WAITING': return 'Waiting to start'
-    default: return status
-  }
 }

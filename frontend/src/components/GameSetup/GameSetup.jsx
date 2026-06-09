@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './GameSetup.css'
 
-const DEFAULT_NAMES = ['Player 1', 'Player 2', 'Player 3', 'Player 4']
+const DEFAULT_NAMES = ['Jugador 1', 'Jugador 2', 'Jugador 3', 'Jugador 4']
 
 export default function GameSetup({ onStart, loading, error }) {
   const [names, setNames] = useState(DEFAULT_NAMES)
@@ -16,7 +16,7 @@ export default function GameSetup({ onStart, loading, error }) {
 
   const addPlayer = () => {
     if (names.length >= 8) return
-    setNames((prev) => [...prev, `Player ${prev.length + 1}`])
+    setNames((prev) => [...prev, `Jugador ${prev.length + 1}`])
   }
 
   const handleStart = () => {
@@ -30,9 +30,9 @@ export default function GameSetup({ onStart, loading, error }) {
 
   return (
     <div className="game-setup" data-testid="game-setup">
-      <div className="game-setup__title">New Game</div>
+      <div className="game-setup__title">Nueva partida</div>
       <div className="game-setup__subtitle">
-        Add 2–8 players. First to 200 wins.
+        Añade de 2 a 8 jugadores. El primero en llegar a 200 gana.
       </div>
       <div className="game-setup__players">
         {names.map((name, i) => (
@@ -41,7 +41,7 @@ export default function GameSetup({ onStart, loading, error }) {
               type="text"
               value={name}
               onChange={(e) => setNameAt(i, e.target.value)}
-              placeholder={`Player ${i + 1}`}
+              placeholder={`Jugador ${i + 1}`}
               data-testid={`player-name-input-${i}`}
               maxLength={20}
             />
@@ -64,7 +64,7 @@ export default function GameSetup({ onStart, loading, error }) {
         disabled={names.length >= 8}
         data-testid="add-player"
       >
-        + Add Player
+        + Añadir jugador
       </button>
       <button
         type="button"
@@ -73,7 +73,7 @@ export default function GameSetup({ onStart, loading, error }) {
         disabled={!canStart || loading}
         data-testid="start-game"
       >
-        {loading ? 'Starting...' : 'Start Game'}
+        {loading ? 'Iniciando...' : 'Iniciar partida'}
       </button>
       {error && <div className="game-setup__error">{error}</div>}
     </div>

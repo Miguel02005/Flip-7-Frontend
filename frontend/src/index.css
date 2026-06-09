@@ -245,6 +245,30 @@ code {
   100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0; }
 }
 
+@keyframes bust-flash {
+  0%   { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.0); background-color: rgba(231, 76, 60, 0.0); }
+  20%  { box-shadow: 0 0 0 6px rgba(231, 76, 60, 0.55); background-color: rgba(231, 76, 60, 0.20); }
+  100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.0);  background-color: rgba(231, 76, 60, 0.0); }
+}
+
+@keyframes freeze-label-in {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes snowflake-pop-2 {
+  0%   { transform: translate(-50%, -50%) scale(0.3) rotate(0deg);  opacity: 0; }
+  25%  { transform: translate(-50%, -50%) scale(1.2) rotate(40deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5) rotate(120deg); opacity: 0; }
+}
+
+@keyframes snowflake-pop-3 {
+  0%   { transform: translate(-50%, -50%) scale(0.3) rotate(0deg);  opacity: 0; }
+  30%  { transform: translate(-50%, -50%) scale(1.1) rotate(-30deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.4) rotate(-90deg); opacity: 0; }
+}
+
 /* Flip 7 celebration — used by Flip7 badges / winner banner. */
 @keyframes flip7-in {
   0%   { transform: scale(0.6) rotate(-6deg); opacity: 0; }

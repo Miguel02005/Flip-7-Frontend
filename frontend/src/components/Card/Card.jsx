@@ -1,71 +1,65 @@
-import { CARD_TYPES, MODIFIER_VALUES } from '../../services/mock/mockData.js'
+import { CARD_TYPE, MODIFIER_LABELS, ACTION_LABELS } from '../../config/api.js'
 import './Card.css'
 
-function modifierLabel(modifier) {
-  if (modifier === MODIFIER_VALUES.TIMES_2) return '×2'
-  // Los modificadores planos vienen como string: '+2', '+4', etc.
-  return modifier
+const NUMBER_NAMES = {
+  0: 'CERO',
+  1: 'UNO',
+  2: 'DOS',
+  3: 'TRES',
+  4: 'CUATRO',
+  5: 'CINCO',
+  6: 'SEIS',
+  7: 'SIETE',
+  8: 'OCHO',
+  9: 'NUEVE',
+  10: 'DIEZ',
+  11: 'ONCE',
+  12: 'DOCE',
 }
 
-const NUMBER_NAMES = {
-  0: 'ZERO',
-  1: 'ONE',
-  2: 'TWO',
-  3: 'THREE',
-  4: 'FOUR',
-  5: 'FIVE',
-  6: 'SIX',
-  7: 'SEVEN',
-  8: 'EIGHT',
-  9: 'NINE',
-  10: 'TEN',
-  11: 'ELEVEN',
-  12: 'TWELVE',
+function modifierLabel(modifier) {
+  if (!modifier) return ''
+  return MODIFIER_LABELS[modifier] || String(modifier)
 }
 
 function cardVisual(card) {
-  if (card.type === CARD_TYPES.NUMBER) {
+  if (card.type === CARD_TYPE.NUMBER) {
     return {
       variantClass: `card--number card--num-${card.value}`,
-      label: '',
-      icon: String(card.value),   // el número va en el icono central grande
+      icon: String(card.value),
       name: '',
       numberName: NUMBER_NAMES[card.value] || '',
     }
   }
-  if (card.type === CARD_TYPES.MODIFIER) {
+  if (card.type === CARD_TYPE.MODIFIER) {
     return {
       variantClass: 'card--modifier',
-      label: 'Modifier',
       icon: modifierLabel(card.modifier),
       name: '',
     }
   }
-  if (card.type === CARD_TYPES.FREEZE) {
+  if (card.type === CARD_TYPE.FREEZE) {
     return {
       variantClass: 'card--action-freeze',
-      label: 'Action',
       icon: '❄',
-      name: 'Freeze',
+      name: ACTION_LABELS[CARD_TYPE.FREEZE],
     }
   }
-  if (card.type === CARD_TYPES.FLIP_THREE) {
+  if (card.type === CARD_TYPE.FLIP_THREE) {
     return {
       variantClass: 'card--action-flip-three',
-      label: 'Action',
       icon: '×3',
-      name: 'Flip 3',
+      name: ACTION_LABELS[CARD_TYPE.FLIP_THREE],
     }
   }
-  if (card.type === CARD_TYPES.SECOND_CHANCE) {
+  if (card.type === CARD_TYPE.SECOND_CHANCE) {
     return {
       variantClass: 'card--action-second-chance',
-      label: 'Action',
       icon: '♥',
-      name: '2nd Chance',
+      name: ACTION_LABELS[CARD_TYPE.SECOND_CHANCE],
     }
   }
-  return { variantClass: 'card--number', label: '', icon: '?', name: '' }
+  return { variantClass: 'card--number', icon: '?', name: '' }
 }
 
 export default function Card({
@@ -88,7 +82,7 @@ export default function Card({
 
   if (!card) return null
 
-  const { variantClass, label, icon, name, numberName } = cardVisual(card)
+  const { variantClass, icon, name, numberName } = cardVisual(card)
 
   const className = [
     'card',
@@ -110,19 +104,10 @@ export default function Card({
       data-testid={`card-${card.id}`}
       data-card-type={card.type}
     >
-      {/* Esquina superior izquierda */}
       <span className="card-corner card-corner--tl">{icon}</span>
-
-      {/* Centro de la carta */}
       <span className="card-value">{icon}</span>
-
-      {/* Nombre de la acción (solo en cartas de acción, no en números) */}
       {name && <span className="card-label">{name}</span>}
-
-      {/* Nombre del número (ONE / TWO / …), solo en cartas numéricas */}
       {numberName && <span className="card-number-name">{numberName}</span>}
-
-      {/* Esquina inferior derecha (invertida) */}
       <span className="card-corner card-corner--br">{icon}</span>
     </div>
   )
