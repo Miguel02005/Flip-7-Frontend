@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   ActionCardReveal — visual de la carta de acción jugada cuando hay
-   pendingAction. El usuario debe ver claramente qué carta salió antes
-   de elegir objetivo.
+   ActionCardReveal — visual of the played action card when there is a
+   pendingAction. The user must clearly see which card came out before
+   choosing a target.
    ───────────────────────────────────────────────────────────────────────── */
 
 .action-card-reveal {

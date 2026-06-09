@@ -9,7 +9,7 @@ export default function ScoreBoard({ players, winThreshold = 200 }) {
 
   return (
     <div className="score-board" data-testid="score-board">
-      <div className="score-board__title">Marcador</div>
+      <div className="score-board__title">Scoreboard</div>
       {sorted.map((p) => {
         const isLeader = p.totalScore === leaderScore && leaderScore > 0
         const isBusted = p.status === PLAYER_STATUS.BUSTED

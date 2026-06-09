@@ -26,7 +26,7 @@ export default function Board({
           <div className="board__title">Flip 7</div>
           {currentRound > 0 && (
             <div className="board__round-info">
-              Ronda <strong>{currentRound}</strong> ·{' '}
+              Round <strong>{currentRound}</strong> ·{' '}
               <span data-testid="game-status">
                 {STATUS_LABELS[status] || status}
               </span>
@@ -38,19 +38,19 @@ export default function Board({
 
       {status === STATUS.GAME_OVER && winner && (
         <div className="board__winner-banner" data-testid="winner-banner">
-          🏆 ¡{winner.name} gana con {winner.totalScore} puntos!
+          🏆 {winner.name} wins with {winner.totalScore} points!
         </div>
       )}
 
       {status === STATUS.ROUND_END && lastRound && (
         <div className="board__round-summary" data-testid="round-summary">
-          <h3>Resumen de la ronda {lastRound.roundNumber}</h3>
+          <h3>Round {lastRound.roundNumber} Summary</h3>
           <table>
             <thead>
               <tr>
-                <th>Jugador</th>
-                <th>Resultado</th>
-                <th>Puntaje de ronda</th>
+                <th>Player</th>
+                <th>Result</th>
+                <th>Round Score</th>
               </tr>
             </thead>
             <tbody>
@@ -68,8 +68,8 @@ export default function Board({
                         {s.flippedSeven
                           ? '⭐ Flip 7'
                           : s.busted
-                          ? 'Eliminado'
-                          : 'Plantado'}
+                          ? 'Busted'
+                          : 'Stayed'}
                       </span>
                     </td>
                     <td className="board__round-score">{s.score}</td>
@@ -84,7 +84,7 @@ export default function Board({
       <div className="board__table" data-testid="board-table">
         {players.length === 0 ? (
           <div className="board__table-empty">
-            Aún no hay jugadores; inicia una partida con el panel de arriba.
+            No players yet; start a game with the panel above.
           </div>
         ) : (
           players.map((p) => (

@@ -63,7 +63,7 @@
   animation: freeze-pulse 1.8s ease-out 1;
 }
 
-/* Variante persistente: jugador sigue STAYED por freeze tras la animación */
+/* Persistent variant: player remains STAYED from a freeze after the animation */
 .player-zone--frozen-static {
   border-color: var(--ice);
   background: linear-gradient(180deg,

@@ -1,40 +1,40 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Flip 7 — Mapeo de errores del backend a mensajes amigables en español
+// Flip 7 — Mapping of backend errors to friendly messages in English
 //
-// El backend devuelve ApiErrorResponse { error: "BAD_REQUEST" | "CONFLICT",
-// message: "..." }. Este módulo traduce los `message` conocidos al español
-// y mantiene el `status` HTTP original para que la UI pueda decidir qué hacer.
+// The backend returns ApiErrorResponse { error: "BAD_REQUEST" | "CONFLICT",
+// message: "..." }. This module translates the known `message` values to
+// English and keeps the original HTTP `status` so the UI can decide what to do.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { API_TIMEOUT_MS } from '../config/api.js'
 
-// Errores de red / timeout / DNS
+// Network / timeout / DNS errors
 export const NETWORK_ERROR = 'NETWORK_ERROR'
 export const TIMEOUT_ERROR = 'TIMEOUT_ERROR'
 
-// Diccionario: message crudo del backend → mensaje en español
+// Dictionary: raw backend message → English message
 const TRANSLATIONS = {
   'Need at least 2 players':
-    'Se necesitan al menos 2 jugadores para crear la partida.',
-  'Game not found': 'La partida no existe o ya no está disponible.',
+    'At least 2 players are required to create a game.',
+  'Game not found': 'The game does not exist or is no longer available.',
   'Not your turn':
-    'No es tu turno. Espera a que el jugador actual termine su jugada.',
-  'No pending action': 'No hay ninguna acción pendiente que resolver.',
+    "It is not your turn. Wait for the current player to finish their play.",
+  'No pending action': 'There is no pending action to resolve.',
   'Target player is not active':
-    'El jugador objetivo no está activo en esta ronda.',
-  'Unsupported action': 'Tipo de acción no soportada.',
-  'Round already in progress': 'Ya hay una ronda en curso.',
-  'Game is already finished': 'La partida ya ha terminado.',
-  'Game is not finished': 'La partida aún no ha terminado.',
+    'The target player is not active this round.',
+  'Unsupported action': 'Unsupported action type.',
+  'Round already in progress': 'A round is already in progress.',
+  'Game is already finished': 'The game has already finished.',
+  'Game is not finished': 'The game has not finished yet.',
 }
 
 export function translateMessage(rawMessage) {
-  if (!rawMessage) return 'Error desconocido.'
+  if (!rawMessage) return 'Unknown error.'
   return TRANSLATIONS[rawMessage] || rawMessage
 }
 
-// Construye un Error enriquecido a partir de una respuesta HTTP no-OK.
-// Devuelve un Error con campos: status, errorCode, message (en español).
+// Builds an enriched Error from a non-OK HTTP response.
+// Returns an Error with fields: status, errorCode, message (in English).
 export function buildHttpError(status, body) {
   const errorCode = body?.error || 'UNKNOWN'
   const rawMessage = body?.message || ''
@@ -47,12 +47,12 @@ export function buildHttpError(status, body) {
   return err
 }
 
-// Construye un Error para fallos de red / timeout.
+// Builds an Error for network / timeout failures.
 export function buildNetworkError(kind) {
   const msg =
     kind === TIMEOUT_ERROR
-      ? 'La petición tardó demasiado. Verifica tu conexión e inténtalo de nuevo.'
-      : 'No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.'
+      ? 'The request took too long. Check your connection and try again.'
+      : 'Could not connect to the server. Make sure the backend is running.'
   const err = new Error(msg)
   err.status = 0
   err.errorCode = kind

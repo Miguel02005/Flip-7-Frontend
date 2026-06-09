@@ -2,19 +2,19 @@ import { CARD_TYPE, MODIFIER_LABELS, ACTION_LABELS } from '../../config/api.js'
 import './Card.css'
 
 const NUMBER_NAMES = {
-  0: 'CERO',
-  1: 'UNO',
-  2: 'DOS',
-  3: 'TRES',
-  4: 'CUATRO',
-  5: 'CINCO',
-  6: 'SEIS',
-  7: 'SIETE',
-  8: 'OCHO',
-  9: 'NUEVE',
-  10: 'DIEZ',
-  11: 'ONCE',
-  12: 'DOCE',
+  0: 'ZERO',
+  1: 'ONE',
+  2: 'TWO',
+  3: 'THREE',
+  4: 'FOUR',
+  5: 'FIVE',
+  6: 'SIX',
+  7: 'SEVEN',
+  8: 'EIGHT',
+  9: 'NINE',
+  10: 'TEN',
+  11: 'ELEVEN',
+  12: 'TWELVE',
 }
 
 function modifierLabel(modifier) {

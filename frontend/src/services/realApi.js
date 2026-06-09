@@ -1,22 +1,22 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Flip 7 — Cliente HTTP para el backend Spring Boot
+// Flip 7 — HTTP client for the Spring Boot backend
 //
-// Todas las funciones devuelven el body de la respuesta parseado (JSON) o
-// lanzan un Error enriquecido (status, errorCode, message) en caso de fallo.
-// Sin mocks, sin stubs: cada llamada golpea el backend real.
+// All functions return the parsed response body (JSON) or throw an
+// enriched Error (status, errorCode, message) on failure.
+// No mocks, no stubs: every call hits the real backend.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { API_BASE, API_TIMEOUT_MS } from '../config/api.js'
 import { buildHttpError, buildNetworkError, TIMEOUT_ERROR } from './errors.js'
 
-// ─── Helper interno ──────────────────────────────────────────────────────────
+// ─── Internal helper ─────────────────────────────────────────────────────────
 
 async function request(path, { method = 'GET', body, signal } = {}) {
   const url = `${API_BASE}${path}`
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
 
-  // Si el caller ya pasó un signal (para cancelación externa), conectarlo.
+  // If the caller already passed a signal (for external cancellation), wire it up.
   if (signal) {
     if (signal.aborted) controller.abort()
     signal.addEventListener('abort', () => controller.abort(), { once: true })
@@ -48,7 +48,7 @@ async function request(path, { method = 'GET', body, signal } = {}) {
     try {
       parsed = JSON.parse(text)
     } catch {
-      // El backend a veces puede devolver texto plano; lo ignoramos.
+      // The backend may sometimes return plain text; we ignore it.
       parsed = null
     }
   }
@@ -65,8 +65,8 @@ const enc = (id) => encodeURIComponent(id)
 
 /**
  * POST /games
- * Crea una nueva partida con los jugadores indicados (mín. 2).
- * Devuelve { gameId }.
+ * Creates a new game with the given players (min. 2).
+ * Returns { gameId }.
  */
 export async function createGame({ playerNames }) {
   return request('/games', { method: 'POST', body: { playerNames } })
@@ -74,7 +74,7 @@ export async function createGame({ playerNames }) {
 
 /**
  * GET /games/{gameId}
- * Devuelve el GameResponse completo (estado actual de la partida).
+ * Returns the full GameResponse (current state of the game).
  */
 export async function getGameState({ gameId }) {
   return request(`/games/${enc(gameId)}`)
@@ -82,7 +82,7 @@ export async function getGameState({ gameId }) {
 
 /**
  * POST /games/{gameId}/rounds/start
- * Inicia una nueva ronda en la partida indicada.
+ * Starts a new round in the given game.
  */
 export async function startRound({ gameId }) {
   return request(`/games/${enc(gameId)}/rounds/start`, { method: 'POST' })
@@ -90,7 +90,7 @@ export async function startRound({ gameId }) {
 
 /**
  * POST /games/{gameId}/draw
- * El jugador actual roba una carta. Body: { playerId }.
+ * The current player draws a card. Body: { playerId }.
  */
 export async function drawCard({ gameId, playerId }) {
   return request(`/games/${enc(gameId)}/draw`, {
@@ -101,7 +101,7 @@ export async function drawCard({ gameId, playerId }) {
 
 /**
  * POST /games/{gameId}/stay
- * El jugador actual se planta. Body: { playerId }.
+ * The current player stays. Body: { playerId }.
  */
 export async function stay({ gameId, playerId }) {
   return request(`/games/${enc(gameId)}/stay`, {
@@ -112,7 +112,7 @@ export async function stay({ gameId, playerId }) {
 
 /**
  * POST /games/{gameId}/actions
- * Resuelve la acción pendiente (FREEZE / FLIP_THREE) eligiendo objetivo.
+ * Resolves the pending action (FREEZE / FLIP_THREE) by choosing a target.
  * Body: { targetPlayerId }.
  */
 export async function applyAction({ gameId, targetPlayerId }) {
@@ -124,7 +124,7 @@ export async function applyAction({ gameId, targetPlayerId }) {
 
 /**
  * GET /games/finished
- * Devuelve la lista de partidas terminadas.
+ * Returns the list of finished games.
  */
 export async function getFinishedGames() {
   return request('/games/finished')
@@ -132,7 +132,7 @@ export async function getFinishedGames() {
 
 /**
  * GET /games/finished/{gameId}
- * Devuelve el GameResponse de una partida ya terminada.
+ * Returns the GameResponse of an already-finished game.
  */
 export async function getFinishedGame({ gameId }) {
   return request(`/games/finished/${enc(gameId)}`)

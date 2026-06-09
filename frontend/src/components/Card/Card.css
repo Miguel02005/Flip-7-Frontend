@@ -21,7 +21,7 @@
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* ─── Esquinas ─── */
+/* ─── Corners ─── */
 
 .card-corner {
   position: absolute;
@@ -42,7 +42,7 @@
   transform: rotate(180deg);
 }
 
-/* ─── Contenido central ─── */
+/* ─── Center content ─── */
 
 .card-label {
   font-size: 9px;
@@ -80,7 +80,7 @@
   pointer-events: none;
 }
 
-/* ─── Carta numérica base ─── */
+/* ─── Base number card ─── */
 
 .card--number {
   background: var(--card-bg);
@@ -88,7 +88,7 @@
   border-bottom-width: 4px;
 }
 
-/* ─── Paleta de colores por número (igual al juego físico) ─── */
+/* ─── Color palette per number (same as the physical game) ─── */
 
 .card--num-0  { color: #9b59b6; border-bottom-color: #9b59b6; }
 .card--num-1  { color: #e74c3c; border-bottom-color: #e74c3c; }
@@ -104,7 +104,7 @@
 .card--num-11 { color: #3498db; border-bottom-color: #3498db; }
 .card--num-12 { color: #95a5a6; border-bottom-color: #7f8c8d; }
 
-/* ─── Modificadora (+2, +4, +6, +8, +10, x2) ─── */
+/* ─── Modifier (+2, +4, +6, +8, +10, x2) ─── */
 
 .card--modifier {
   background: linear-gradient(180deg, #ffe49a, #ffd86b);
@@ -122,7 +122,7 @@
   color: #5a3a00;
 }
 
-/* ─── Acción: Freeze ─── */
+/* ─── Action: Freeze ─── */
 
 .card--action-freeze {
   background: linear-gradient(180deg, #e6f3ff, #cfe8ff);
@@ -146,7 +146,7 @@
   font-size: 12px;
 }
 
-/* ─── Acción: Flip Three ─── */
+/* ─── Action: Flip Three ─── */
 
 .card--action-flip-three {
   background: linear-gradient(180deg, #fffacf, #fff7a8);
@@ -170,7 +170,7 @@
   color: #6d4d00;
 }
 
-/* ─── Acción: Second Chance ─── */
+/* ─── Action: Second Chance ─── */
 
 .card--action-second-chance {
   background: linear-gradient(180deg, #ffe1d2, #ffc7a8);
@@ -194,7 +194,7 @@
   font-size: 12px;
 }
 
-/* ─── Tamaño pequeño ─── */
+/* ─── Small size ─── */
 
 .card--small {
   width: 52px;
@@ -232,7 +232,7 @@
   bottom: 3px;
 }
 
-/* ─── Carta boca abajo ─── */
+/* ─── Face-down card ─── */
 
 .card--back {
   background:

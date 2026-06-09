@@ -237,15 +237,15 @@
   right: 6%;
   --rot: 14deg;
   transform: rotate(14deg);
-  animation: card-float 7s ease-in-out infinite 0.5s;
+  animation: card-float 6s ease-in-out infinite 0.5s;
 }
 
 .lobby__card--3 {
   bottom: 16%;
-  left: 6%;
+  left: 5%;
   --rot: 8deg;
   transform: rotate(8deg);
-  animation: card-float 8s ease-in-out infinite 1s;
+  animation: card-float 2s ease-in-out infinite 1s;
 }
 
 .lobby__card--4 {

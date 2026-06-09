@@ -15,10 +15,10 @@ export default function WinnerModal({ winner, players, onClose }) {
         className="winner-modal__content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="winner-modal__title">🏆 Fin de la partida</div>
-        <div className="winner-modal__name">¡{winner.name} gana!</div>
+        <div className="winner-modal__title">🏆 Game Over</div>
+        <div className="winner-modal__name">{winner.name} wins!</div>
         <div className="winner-modal__score">
-          Puntaje final: <strong>{winner.totalScore}</strong> puntos
+          Final score: <strong>{winner.totalScore}</strong> points
         </div>
         <div className="winner-modal__podium">
           {sorted.slice(0, 3).map((p, idx) => (
@@ -46,10 +46,10 @@ export default function WinnerModal({ winner, players, onClose }) {
         )}
         <div className="winner-modal__actions">
           <button className="winner-modal__play-again" onClick={onClose}>
-            Jugar de nuevo
+            Play Again
           </button>
           <button className="winner-modal__back" onClick={onClose}>
-            Volver al inicio
+            Back to Home
           </button>
         </div>
       </div>

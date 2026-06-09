@@ -2,23 +2,23 @@ import { CARD_TYPE, ACTION_LABELS } from '../../config/api.js'
 import './ActionCardReveal.css'
 
 /**
- * ActionCardReveal — muestra visualmente la carta de acción jugada.
+ * ActionCardReveal — visually displays the played action card.
  *
- * El backend no persiste las cartas FREEZE/FLIP_THREE/SECOND_CHANCE en
- * players[].cards (se descartan tras jugarse), sino en pendingAction.card.
- * Este componente toma pendingAction y muestra la carta real con su
- * nombre propio y una animación de entrada para que el usuario la vea
- * claramente antes de elegir objetivo.
+ * The backend does not persist FREEZE/FLIP_THREE/SECOND_CHANCE cards in
+ * players[].cards (they are discarded after being played), but rather in
+ * pendingAction.card. This component takes pendingAction and shows the
+ * actual card with its own name and an entrance animation so the user
+ * can see it clearly before choosing a target.
  *
- * Solo se muestra cuando hay un pendingAction (es decir, cuando una carta
- * de acción acaba de ser jugada y aún no se ha resuelto).
+ * It is only shown when there is a pendingAction (i.e. when an action
+ * card has just been played and has not yet been resolved).
  */
 export default function ActionCardReveal({ pendingAction }) {
   if (!pendingAction || !pendingAction.card) return null
 
   const card = pendingAction.card
   const type = card.type || pendingAction.type
-  const name = ACTION_LABELS[type] || 'Acción'
+  const name = ACTION_LABELS[type] || 'Action'
   const variantClass = `action-card-reveal--${String(type).toLowerCase()}`
   const remaining =
     typeof pendingAction.remainingCards === 'number'
@@ -55,10 +55,10 @@ export default function ActionCardReveal({ pendingAction }) {
       <div className="action-card-reveal__caption">
         <strong>{name}</strong>
         {type === CARD_TYPE.FLIP_THREE && remaining > 0 &&
-          ` — ${remaining} carta${remaining === 1 ? '' : 's'} por robar`}
+          ` — ${remaining} card${remaining === 1 ? '' : 's'} left to draw`}
         {type === CARD_TYPE.SECOND_CHANCE &&
-          ' — pasa al siguiente jugador activo'}
-        {type === CARD_TYPE.FREEZE && ' — elige a quién congelar'}
+          ' — passes to the next active player'}
+        {type === CARD_TYPE.FREEZE && ' — choose who to freeze'}
       </div>
     </div>
   )

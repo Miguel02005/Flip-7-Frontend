@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Flip 7 — Fachada de la API
+// Flip 7 — API facade
 //
-// Este es el ÚNICO archivo que el resto de la app importa para hablar con el
-// backend. Re-exporta las funciones de realApi.js con la misma firma que antes
-// para mantener compatibilidad con el código existente.
+// This is the ONLY file the rest of the app imports to talk to the
+// backend. It re-exports the functions from realApi.js with the same
+// signature as before to keep compatibility with the existing code.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { getGameState } from './realApi.js'
@@ -20,10 +20,10 @@ export {
 } from './realApi.js'
 
 /**
- * Alias histórico: getHistory se mantiene para HistoryPage.
- * El backend expone el historial en GameResponse.roundHistory, así que
- * getHistory es solo un wrapper de getGameState que devuelve el slice
- * relevante (rondas + ganador).
+ * Historical alias: getHistory is kept for HistoryPage.
+ * The backend exposes the history in GameResponse.roundHistory, so
+ * getHistory is just a wrapper of getGameState that returns the relevant
+ * slice (rounds + winner).
  */
 export async function getHistory({ gameId }) {
   const state = await getGameState({ gameId })

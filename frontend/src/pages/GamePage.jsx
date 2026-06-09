@@ -19,12 +19,12 @@ export default function GamePage() {
     resetGame,
   } = useGameActions()
   const navigate = useNavigate()
-  // ID del temporizador de auto-avance. Usamos useRef (no useState) porque
-  // no necesitamos repintar al asignarlo: solo lo usamos para cancelarlo
-  // desde handleStartNext cuando el usuario hace clic manualmente.
+  // Auto-advance timer ID. We use useRef (not useState) because
+  // we don't need to re-render when assigning it: we only use it to cancel
+  // from handleStartNext when the user clicks manually.
   const autoAdvanceTimerRef = useRef(null)
 
-  // Avance automático a la siguiente ronda después de ROUND_END (5 s)
+  // Auto-advance to the next round after ROUND_END (5 s)
   useEffect(() => {
     if (game.status === STATUS.ROUND_END) {
       const t = setTimeout(() => {
@@ -60,8 +60,8 @@ export default function GamePage() {
   const handleStart = async (playerNames) => {
     const result = await createGame(playerNames)
     if (result && result.gameId) {
-      // Pasamos el gameId explícitamente para que startRound no lea un valor
-      // obsoleto del contexto (que aún contiene el estado pre-creación).
+      // We pass gameId explicitly so startRound doesn't read a stale
+      // value from the context (which still contains the pre-creation state).
       await startRound(result.gameId)
     }
   }
@@ -83,7 +83,7 @@ export default function GamePage() {
     applyAction(targetId)
   }
 
-  // No hay partida aún: mostrar configuración
+  // No game yet: show setup
   if (!game.gameId) {
     return (
       <div className="game-page" style={{ padding: 16 }}>
@@ -125,7 +125,7 @@ export default function GamePage() {
         </div>
       </Board>
 
-      <div className="board__controls" style={{ marginTop: 16 }}>
+      <div className="board__controls board__controls--sticky">
         <ActionPanel
           status={game.status}
           currentPlayer={currentPlayer}
@@ -165,7 +165,7 @@ export default function GamePage() {
           className="btn btn--secondary"
           data-testid="nav-history"
         >
-          Ver historial
+          View History
         </button>
         <button
           onClick={handleNewGame}
@@ -173,7 +173,7 @@ export default function GamePage() {
           style={{ marginLeft: 8 }}
           data-testid="reset-game"
         >
-          Reiniciar partida
+          Reset Game
         </button>
       </div>
     </div>

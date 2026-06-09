@@ -14,26 +14,26 @@ export default function ActionPanel({
   onStartNextRound,
   onNewGame,
 }) {
-  // Sin partida iniciada todavía
+  // No game started yet
   if (status === STATUS.IDLE || status === STATUS.WAITING) {
     return (
       <div className="action-panel">
-        <div className="action-panel__title">Configuración de partida</div>
+        <div className="action-panel__title">Game Setup</div>
         <div className="action-panel__message">
-          Configura los jugadores en el panel de la izquierda y luego inicia la
-          partida.
+          Configure the players in the panel on the left and then start the
+          game.
         </div>
       </div>
     )
   }
 
-  // Ronda recién terminada: mostrar resumen y permitir iniciar la siguiente
+  // Round just ended: show summary and allow starting the next one
   if (status === STATUS.ROUND_END) {
     return (
       <div className="action-panel">
-        <div className="action-panel__title">Ronda completada</div>
+        <div className="action-panel__title">Round Complete</div>
         <div className="action-panel__message">
-          La ronda terminó. Inicia la siguiente ronda cuando estés listo.
+          The round has ended. Start the next round whenever you're ready.
         </div>
         <div className="action-panel__buttons">
           <button
@@ -42,20 +42,20 @@ export default function ActionPanel({
             disabled={loading}
             data-testid="start-next-round"
           >
-            {loading ? 'Procesando...' : 'Iniciar siguiente ronda'}
+            {loading ? 'Processing...' : 'Start Next Round'}
           </button>
         </div>
       </div>
     )
   }
 
-  // Partida terminada
+  // Game over
   if (status === STATUS.GAME_OVER) {
     return (
       <div className="action-panel">
-        <div className="action-panel__title">Fin de la partida</div>
+        <div className="action-panel__title">Game Over</div>
         <div className="action-panel__message">
-          Un jugador alcanzó 200 puntos. Mira el banner del ganador arriba.
+          A player reached 200 points. Check the winner banner above.
         </div>
         <div className="action-panel__buttons">
           <button
@@ -63,24 +63,24 @@ export default function ActionPanel({
             onClick={onNewGame}
             data-testid="new-game"
           >
-            Nueva partida
+            New Game
           </button>
         </div>
       </div>
     )
   }
 
-  // En ronda: acción pendiente — el jugador origen debe elegir objetivo.
-  // Mostramos también la carta jugada visualmente con su nombre real.
+  // In round: pending action — the source player must choose a target.
+  // We also display the played card visually with its real name.
   if (pendingAction) {
     return (
       <div className="action-panel" data-testid="pending-action">
-        <div className="action-panel__title">Carta de acción jugada</div>
+        <div className="action-panel__title">Action Card Played</div>
         <ActionCardReveal pendingAction={pendingAction} />
         <div className="action-panel__message">
-          <strong>{pendingAction.sourcePlayerName || 'Un jugador'}</strong> jugó
-          una <strong>{actionLabel(pendingAction.type)}</strong>. Haz clic en un
-          jugador objetivo para aplicarla. (Puedes elegirte a ti mismo.)
+          <strong>{pendingAction.sourcePlayerName || 'A player'}</strong> played
+          a <strong>{actionLabel(pendingAction.type)}</strong>. Click on a
+          target player to apply it. (You may choose yourself.)
         </div>
         <div className="action-panel__buttons">
           <button
@@ -88,7 +88,7 @@ export default function ActionPanel({
             onClick={() => onApplyAction(pendingAction.sourcePlayerId)}
             data-testid="target-self"
           >
-            Elegirme ({pendingAction.sourcePlayerName})
+            Choose me ({pendingAction.sourcePlayerName})
           </button>
         </div>
         <div
@@ -99,17 +99,17 @@ export default function ActionPanel({
             .filter((p) => p.id !== pendingAction.sourcePlayerId)
             .map((p) => p.name)
             .join(', ') ||
-            'No hay otros jugadores activos; debes elegirte a ti mismo.'}
+            'No other active players; you must choose yourself.'}
         </div>
       </div>
     )
   }
 
-  // En ronda: sin acción pendiente — controles del jugador actual
+  // In round: no pending action — current player controls
   if (!currentPlayer) {
     return (
       <div className="action-panel">
-        <div className="action-panel__title">Esperando...</div>
+        <div className="action-panel__title">Waiting...</div>
       </div>
     )
   }
@@ -117,7 +117,7 @@ export default function ActionPanel({
   return (
     <div className="action-panel" data-testid="action-panel">
       <div className="action-panel__title">
-        Turno de {currentPlayer.name}
+        {currentPlayer.name}'s Turn
       </div>
       <div className="action-panel__buttons">
         <button
@@ -127,7 +127,7 @@ export default function ActionPanel({
           data-testid="draw-card"
         >
           <span className="btn__icon" aria-hidden="true">＋</span>
-          {loading ? 'Robando…' : 'Robar carta'}
+          {loading ? 'Drawing…' : 'Draw Card'}
         </button>
         <button
           className="btn btn--stay"
@@ -136,7 +136,7 @@ export default function ActionPanel({
           data-testid="stay"
         >
           <span className="btn__icon" aria-hidden="true">✋</span>
-          Plantarse
+          Stay
         </button>
       </div>
     </div>
@@ -147,5 +147,5 @@ function actionLabel(type) {
   if (type === CARD_TYPE.FREEZE) return ACTION_LABELS[CARD_TYPE.FREEZE]
   if (type === CARD_TYPE.FLIP_THREE) return ACTION_LABELS[CARD_TYPE.FLIP_THREE]
   if (type === CARD_TYPE.SECOND_CHANCE) return ACTION_LABELS[CARD_TYPE.SECOND_CHANCE]
-  return 'Acción'
+  return 'Action'
 }

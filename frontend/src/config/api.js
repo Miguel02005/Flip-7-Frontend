@@ -1,27 +1,27 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Flip 7 — Configuración de la API y constantes del dominio
+// Flip 7 — API configuration and domain constants
 //
-// Las constantes espejan los enums del backend (GameStatus, CardType,
-// PlayerStatus, ModifierType) sin inventar valores. Cualquier cambio en
-// el backend debe reflejarse aquí.
+// The constants mirror the backend enums (GameStatus, CardType,
+// PlayerStatus, ModifierType) without inventing values. Any change in
+// the backend must be reflected here.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Base URL para todas las llamadas HTTP.
+// Base URL for all HTTP calls.
 //
-// El backend Spring Boot expone sus endpoints directamente bajo /games
-// (sin prefijo /api). Por eso API_BASE debe ser string vacío por defecto.
-// En desarrollo, el dev server de Vite intercepta /games y lo redirige a
-// http://localhost:8080. En producción, VITE_API_BASE puede sobreescribirse
-// con la URL absoluta del backend, p. ej. http://localhost:8080
+// The Spring Boot backend exposes its endpoints directly under /games
+// (without the /api prefix). That's why API_BASE must default to an empty
+// string. In development, the Vite dev server intercepts /games and
+// redirects to http://localhost:8080. In production, VITE_API_BASE can
+// be overridden with the absolute backend URL, e.g. http://localhost:8080
 export const API_BASE = import.meta.env.VITE_API_BASE ?? ''
 
-// Timeout por defecto para todas las peticiones.
+// Default timeout for all requests.
 export const API_TIMEOUT_MS = 15000
 
-// Umbral de puntos para ganar la partida (coincide con el backend).
+// Point threshold to win the game (matches the backend).
 export const WIN_THRESHOLD = 200
 
-// ─── Enums del backend (espejos) ─────────────────────────────────────────────
+// ─── Backend enums (mirrors) ─────────────────────────────────────────────────
 
 export const STATUS = Object.freeze({
   IDLE: 'IDLE',
@@ -60,7 +60,7 @@ export const MODIFIER_TYPE = Object.freeze({
   TIMES_2: 'TIMES_2',
 })
 
-// Etiqueta legible para mostrar en la UI de un modificador.
+// Human-readable label to display in the UI for a modifier.
 export const MODIFIER_LABELS = Object.freeze({
   [MODIFIER_TYPE.PLUS_2]: '+2',
   [MODIFIER_TYPE.PLUS_4]: '+4',
@@ -70,25 +70,25 @@ export const MODIFIER_LABELS = Object.freeze({
   [MODIFIER_TYPE.TIMES_2]: '×2',
 })
 
-// Etiqueta legible de cada tipo de carta de acción.
-// IMPORTANTE: estos son nombres propios del juego y NO se traducen.
+// Human-readable label for each action card type.
+// IMPORTANT: these are proper names from the game and are NOT translated.
 export const ACTION_LABELS = Object.freeze({
   [CARD_TYPE.FREEZE]: 'Freeze',
   [CARD_TYPE.FLIP_THREE]: 'Flip Three',
   [CARD_TYPE.SECOND_CHANCE]: 'Second Chance',
 })
 
-// Etiqueta legible de los estatus del juego.
+// Human-readable label for each game status.
 export const STATUS_LABELS = Object.freeze({
-  [STATUS.WAITING]: 'Esperando para iniciar',
-  [STATUS.IN_ROUND]: 'En curso',
-  [STATUS.ROUND_END]: 'Ronda terminada',
-  [STATUS.GAME_OVER]: 'Partida terminada',
+  [STATUS.WAITING]: 'Waiting to start',
+  [STATUS.IN_ROUND]: 'In progress',
+  [STATUS.ROUND_END]: 'Round ended',
+  [STATUS.GAME_OVER]: 'Game over',
 })
 
-// Etiqueta legible de los estatus de jugador.
+// Human-readable label for each player status.
 export const PLAYER_STATUS_LABELS = Object.freeze({
-  [PLAYER_STATUS.ACTIVE]: 'ACTIVO',
-  [PLAYER_STATUS.STAYED]: 'PLANTADO',
-  [PLAYER_STATUS.BUSTED]: 'ELIMINADO',
+  [PLAYER_STATUS.ACTIVE]: 'ACTIVE',
+  [PLAYER_STATUS.STAYED]: 'STAYED',
+  [PLAYER_STATUS.BUSTED]: 'BUSTED',
 })

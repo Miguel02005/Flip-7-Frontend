@@ -3,9 +3,8 @@ import { PLAYER_STATUS, PLAYER_STATUS_LABELS, CARD_TYPE } from '../../config/api
 import Card from '../Card/Card.jsx'
 import './PlayerZone.css'
 
-// Duración de los flashes visuales. Más cortas que el timeout del backend
-// para que el efecto visual no quede "pegado" si la siguiente mutación
-// llega rápido.
+// Visual flash durations. Shorter than the backend timeout so the
+// visual effect doesn't get "stuck" if the next mutation arrives quickly.
 const FREEZE_FLASH_MS = 1800
 const BUST_FLASH_MS = 900
 
@@ -31,17 +30,17 @@ function hasSecondChance(player) {
 }
 
 /**
- * PlayerZone — zona de un jugador en el tablero.
+ * PlayerZone — a player's area on the board.
  *
- * Animaciones derivadas del estado real del backend:
- *   - freeze: cuando este jugador acaba de pasar a STAYED y hay un
- *     pendingAction reciente de tipo FREEZE del que fue objetivo.
- *   - bust: cuando este jugador pasa de ACTIVE/otro estado a BUSTED.
+ * Animations derived from the actual backend state:
+ *   - freeze: when this player just transitioned to STAYED and there's a
+ *     recent pendingAction of type FREEZE of which they were the target.
+ *   - bust: when this player transitions from ACTIVE/another status to BUSTED.
  *
- * NO usamos eventos del store (que nunca llegan para FREEZE ni para BUST
- * de la víctima): leemos directamente los cambios de status del jugador
- * y la presencia de un pendingAction de FREEZE del que es sourcePlayerId
- * del que es objetivo.
+ * We do NOT use store events (which never arrive for FREEZE nor for BUST
+ * of the victim): we read the player's status changes directly and the
+ * presence of a pendingAction of FREEZE whose sourcePlayerId is the one
+ * who is the target.
  */
 export default function PlayerZone({
   player,
@@ -51,15 +50,15 @@ export default function PlayerZone({
   onTargetClick,
   lastFreezeSourceId,
 }) {
-  // Refs para detectar transiciones de estado (entramos en BUSTED,
-  // entramos en STAYED por freeze).
+  // Refs to detect state transitions (we enter BUSTED,
+  // we enter STAYED from a freeze).
   const prevStatusRef = useRef(player.status)
   const wasFrozenRef = useRef(false)
 
   const [frozenFlash, setFrozenFlash] = useState(false)
   const [bustFlash, setBustFlash] = useState(false)
 
-  // Detección de transición: el jugador acaba de pasar a BUSTED.
+  // Transition detection: the player just transitioned to BUSTED.
   useEffect(() => {
     const prev = prevStatusRef.current
     if (prev !== PLAYER_STATUS.BUSTED && player.status === PLAYER_STATUS.BUSTED) {
@@ -72,21 +71,21 @@ export default function PlayerZone({
     return undefined
   }, [player.status])
 
-  // Detección de freeze: si el último pendingAction fue un FREEZE
-  // cuyo sourcePlayerId somos nosotros (es decir, NOSOTROS robamos la
-  // carta) o cuyo sourcePlayerId es OTRO y nosotros pasamos a STAYED
-  // por ser el objetivo.
-  // El backend aplica el efecto y limpia pendingAction; comparamos contra
-  // un prop `lastFreezeSourceId` que el Board pasa cuando detecta un
-  // pendingAction.type === 'FREEZE' previo.
+  // Freeze detection: if the last pendingAction was a FREEZE
+  // whose sourcePlayerId is us (i.e. WE drew the card) or whose
+  // sourcePlayerId is SOMEONE ELSE and we transitioned to STAYED
+  // because we were the target.
+  // The backend applies the effect and clears pendingAction; we compare
+  // against a `lastFreezeSourceId` prop that the Board passes when it
+  // detects a previous pendingAction.type === 'FREEZE'.
   useEffect(() => {
     if (lastFreezeSourceId == null) {
       wasFrozenRef.current = false
       return
     }
     if (wasFrozenRef.current) return
-    // Si el freeze lo robó este jugador o le fue aplicado a este jugador
-    // (su estado acaba de pasar a STAYED), mostramos el flash.
+    // If this player drew the freeze or it was applied to this player
+    // (their status just transitioned to STAYED), show the flash.
     const isSource = lastFreezeSourceId === player.id
     const isStayedByFreeze =
       player.status === PLAYER_STATUS.STAYED &&
@@ -130,9 +129,9 @@ export default function PlayerZone({
       <div className="player-zone__header">
         <div className="player-zone__name">
           {player.name}
-          {isDealer && <span className="player-zone__dealer">Repartidor</span>}
+          {isDealer && <span className="player-zone__dealer">Dealer</span>}
           {isCurrent && (
-            <span className="player-zone__current">Tu turno</span>
+            <span className="player-zone__current">Your turn</span>
           )}
         </div>
         <div className={`player-zone__status ${statusBadgeClass(player.status)}`}>
@@ -140,14 +139,14 @@ export default function PlayerZone({
         </div>
         <div className="player-zone__scores">
           <span>
-            Ronda: <strong>{player.roundScore || 0}</strong>
+            Round: <strong>{player.roundScore || 0}</strong>
           </span>
           <span>
             Total: <strong>{player.totalScore || 0}</strong>
           </span>
         </div>
         {player.flippedSeven && (
-          <div className="player-zone__flip7">★ ¡Flip 7!</div>
+          <div className="player-zone__flip7">★ Flip 7!</div>
         )}
         {hasSecondChance(player) && (
           <div
@@ -161,7 +160,7 @@ export default function PlayerZone({
 
       <div className="player-zone__hand">
         {cards.length === 0 ? (
-          <span className="player-zone__hand-empty">(sin cartas aún)</span>
+          <span className="player-zone__hand-empty">(no cards yet)</span>
         ) : (
           cards.map((card) => <Card key={card.id} card={card} small />)
         )}
@@ -186,7 +185,7 @@ export default function PlayerZone({
       {bustFlash && (
         <>
           <span className="player-zone__bust-text" aria-hidden="true">
-            ¡ELIMINADO!
+            BUSTED!
           </span>
         </>
       )}

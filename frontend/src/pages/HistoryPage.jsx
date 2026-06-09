@@ -19,7 +19,7 @@ export default function HistoryPage() {
       try {
         const state = await getGameState({ gameId })
         if (cancelled) return
-        // Adaptamos el shape de GameResponse al formato que la UI espera:
+        // Adapt the GameResponse shape to the format the UI expects:
         // { winner, rounds: [{ roundNumber, scores: [...] }] }
         setHistory({
           winner: state.winner,
@@ -38,10 +38,10 @@ export default function HistoryPage() {
   if (!gameId) {
     return (
       <div style={{ padding: 32 }} data-testid="history-page">
-        <h1>Historial</h1>
-        <p>No hay partida en curso.</p>
+        <h1>History</h1>
+        <p>No game in progress.</p>
         <button onClick={() => navigate('/')} className="btn btn--primary">
-          Volver al inicio
+          Back to Home
         </button>
       </div>
     )
@@ -49,19 +49,19 @@ export default function HistoryPage() {
 
   return (
     <div style={{ padding: 32 }} data-testid="history-page">
-      <h1>Historial de la partida</h1>
+      <h1>Game History</h1>
       {error && <p style={{ color: '#c2185b' }}>Error: {error}</p>}
       {history && (
         <>
           {history.winner && (
             <div className="board__winner-banner" data-testid="history-winner">
-              🏆 {history.winner.name} ganó con {history.winner.totalScore}{' '}
-              puntos.
+              🏆 {history.winner.name} won with {history.winner.totalScore}{' '}
+              points.
             </div>
           )}
-          <h2>Rondas</h2>
+          <h2>Rounds</h2>
           {history.rounds.length === 0 ? (
-            <p>Aún no se han jugado rondas.</p>
+            <p>No rounds have been played yet.</p>
           ) : (
             <table
               style={{
@@ -80,7 +80,7 @@ export default function HistoryPage() {
                       borderBottom: '1px solid var(--border)',
                     }}
                   >
-                    Ronda
+                    Round
                   </th>
                   <th
                     style={{
@@ -89,7 +89,7 @@ export default function HistoryPage() {
                       borderBottom: '1px solid var(--border)',
                     }}
                   >
-                    Jugador
+                    Player
                   </th>
                   <th
                     style={{
@@ -98,7 +98,7 @@ export default function HistoryPage() {
                       borderBottom: '1px solid var(--border)',
                     }}
                   >
-                    Resultado
+                    Result
                   </th>
                   <th
                     style={{
@@ -107,7 +107,7 @@ export default function HistoryPage() {
                       borderBottom: '1px solid var(--border)',
                     }}
                   >
-                    Puntaje
+                    Score
                   </th>
                 </tr>
               </thead>
@@ -140,8 +140,8 @@ export default function HistoryPage() {
                         {s.flippedSeven
                           ? '⭐ Flip 7'
                           : s.busted
-                          ? 'Eliminado'
-                          : 'Plantado'}
+                          ? 'Busted'
+                          : 'Stayed'}
                       </td>
                       <td
                         style={{
@@ -165,7 +165,7 @@ export default function HistoryPage() {
           onClick={() => navigate('/')}
           className="btn btn--secondary"
         >
-          Volver al inicio
+          Back to Home
         </button>
         {history && history.rounds.length > 0 && (
           <button
@@ -173,7 +173,7 @@ export default function HistoryPage() {
             className="btn btn--primary"
             style={{ marginLeft: 8 }}
           >
-            Volver a la partida
+            Back to Game
           </button>
         )}
       </div>

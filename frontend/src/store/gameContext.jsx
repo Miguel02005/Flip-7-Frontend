@@ -1,22 +1,22 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Flip 7  —  Game Store (Context + useReducer)
 //
-// Fuente única de verdad para todo el estado de la UI.
-// Los componentes leen con useGame() y despachan acciones con useGameActions().
+// Single source of truth for all UI state.
+// Components read with useGame() and dispatch actions with useGameActions().
 // ─────────────────────────────────────────────────────────────────────────────
 
 /* eslint-disable react-refresh/only-export-components */
-// Este módulo exporta un Provider y sus hooks asociados. Es el patrón
-// recomendado para Context API en React: mantenerlos juntos facilita el
-// fast refresh y la cohesión del módulo.
+// This module exports a Provider and its associated hooks. It is the
+// recommended pattern for Context API in React: keeping them together
+// eases fast refresh and module cohesion.
 
 import { createContext, useContext, useReducer, useCallback, useRef, useEffect } from 'react'
 import * as api from '../services/api.js'
 
-// ─── Estado inicial ──────────────────────────────────────────────────────────
+// ─── Initial state ───────────────────────────────────────────────────────────
 
 const INITIAL_STATE = {
-  // Metadatos del juego
+  // Game metadata
   gameId: null,
   status: 'IDLE',           // IDLE | WAITING | IN_ROUND | ROUND_END | GAME_OVER
   currentRound: 0,
@@ -24,18 +24,18 @@ const INITIAL_STATE = {
   dealerId: null,
   winner: null,
 
-  // Jugadores
+  // Players
   players: [],
 
-  // Acción pendiente que requiere selección de objetivo
+  // Pending action that requires a target selection
   pendingAction: null,
 
   // UI
   loading: false,
   error: null,
-  events: [],               // últimos eventos del backend (para animaciones)
+  events: [],               // latest events from the backend (for animations)
 
-  // Cola de toasts
+  // Toast queue
   toasts: [],
   roundHistory: [],
 }
@@ -83,9 +83,30 @@ function reducer(state, action) {
         lastAutomaticEvent,
       } = action.payload
 
-      // El backend incluye lastAutomaticEvent (no persistente) cuando ocurrió
-      // un evento automático en la mutación más reciente. Lo extraemos para
-      // mostrarlo como toast y lo descartamos del estado.
+ console.log('========== STATE UPDATED ==========')
+
+console.log('PENDING ACTION:')
+console.log(pendingAction)
+
+console.table(
+  (players || []).map((p) => ({
+    name: p.name,
+    id: p.id,
+    status: p.status,
+    roundScore: p.roundScore,
+    totalScore: p.totalScore,
+    cards: p.cards?.map(
+      (c) =>
+        c.value ??
+        c.type ??
+        c.modifier
+    ).join(', '),
+  }))
+)
+
+      // The backend includes lastAutomaticEvent (non-persistent) when an
+      // automatic event occurred in the most recent mutation. We extract it
+      // to show as a toast and discard it from the state.
       let events = state.events
       if (lastAutomaticEvent) {
         events = [lastAutomaticEvent, ...state.events].slice(0, 20)
@@ -156,25 +177,24 @@ export function GameProvider({ children }) {
 
 export function useGame() {
   const ctx = useContext(GameStateContext)
-  if (!ctx) throw new Error('useGame debe usarse dentro de <GameProvider>')
+  if (!ctx) throw new Error('useGame must be used within <GameProvider>')
   return ctx
 }
 
 function useDispatch() {
   const ctx = useContext(GameDispatchContext)
-  if (!ctx) throw new Error('useGameActions debe usarse dentro de <GameProvider>')
+  if (!ctx) throw new Error('useGameActions must be used within <GameProvider>')
   return ctx
 }
 
-// ─── Creadores de acciones ───────────────────────────────────────────────────
+// ─── Action creators ─────────────────────────────────────────────────────────
 
 export function useGameActions() {
   const dispatch = useDispatch()
   const state = useGame()
 
-  // Mantener un ref al estado más reciente para que las acciones asíncronas
-  // no lean valores obsoletos (p. ej. justo después de createGame antes de
-  // que React haya repintado).
+  // Keep a ref to the most recent state so async actions don't read
+  // stale values (e.g. right after createGame before React has re-rendered).
   const stateRef = useRef(state)
   useEffect(() => {
     stateRef.current = state
@@ -196,9 +216,9 @@ export function useGameActions() {
     async (playerNames) => {
       dispatch({ type: 'SET_LOADING', payload: true })
       try {
-        // 1) El backend solo devuelve { gameId } al crear.
+        // 1) The backend only returns { gameId } on creation.
         const { gameId } = await api.createGame({ playerNames })
-        // 2) Pedimos el estado completo para tener los jugadores.
+        // 2) We request the full state to get the players.
         const stateRes = await api.getGameState({ gameId })
         dispatch({
           type: 'GAME_CREATED',
@@ -216,7 +236,7 @@ export function useGameActions() {
   const startRound = useCallback(async (overrideGameId) => {
     const gameId = overrideGameId ?? stateRef.current.gameId
     if (!gameId) {
-      dispatch({ type: 'SET_ERROR', payload: 'No hay partida activa' })
+      dispatch({ type: 'SET_ERROR', payload: 'No active game' })
       return null
     }
     dispatch({ type: 'SET_LOADING', payload: true })
@@ -233,31 +253,102 @@ export function useGameActions() {
   }, [dispatch, addToast])
 
   const drawCard = useCallback(async () => {
-    const cur = stateRef.current
-    dispatch({ type: 'SET_LOADING', payload: true })
-    try {
-      const result = await api.drawCard({
-        gameId: cur.gameId,
-        playerId: cur.currentPlayerId,
+  const cur = stateRef.current
+
+  console.log('========== BEFORE DRAW ==========')
+  console.log({
+    gameId: cur.gameId,
+    currentPlayerId: cur.currentPlayerId,
+    status: cur.status,
+    pendingAction: cur.pendingAction,
+  })
+
+  dispatch({ type: 'SET_LOADING', payload: true })
+
+  try {
+    const result = await api.drawCard({
+      gameId: cur.gameId,
+      playerId: cur.currentPlayerId,
+    })
+
+    console.log('========== DRAW RESPONSE ==========')
+    console.log(JSON.stringify(result, null, 2))
+
+    console.log('========== SUMMARY ==========')
+
+    result.players?.forEach((p) => {
+      console.log({
+        player: p.name,
+        status: p.status,
+        score: p.roundScore,
+        cards: p.cards?.map(
+          (c) =>
+            c.value ??
+            c.type ??
+            c.modifier
+        ),
       })
-      dispatch({ type: 'STATE_UPDATED', payload: result })
-      handleAutomaticEvent(result.lastAutomaticEvent, result.players, addToast)
-      handlePendingAction(result.pendingAction, result.players, addToast)
-      return result
-    } catch (err) {
-      dispatch({ type: 'SET_ERROR', payload: err.message })
-      return null
-    }
-  }, [dispatch, addToast])
+    })
+
+    dispatch({ type: 'STATE_UPDATED', payload: result })
+
+    handleAutomaticEvent(
+      result.lastAutomaticEvent,
+      result.players,
+      addToast
+    )
+
+    handlePendingAction(
+      result.pendingAction,
+      result.players,
+      addToast
+    )
+
+    return result
+  } catch (err) {
+    console.error('========== DRAW ERROR ==========')
+    console.error(err)
+
+    console.log({
+      status: err.status,
+      errorCode: err.errorCode,
+      rawMessage: err.rawMessage,
+      message: err.message,
+    })
+
+    dispatch({ type: 'SET_ERROR', payload: err.message })
+
+    return null
+  }
+}, [dispatch, addToast])
 
   const stay = useCallback(async () => {
     const cur = stateRef.current
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
       const result = await api.stay({
-        gameId: cur.gameId,
-        playerId: cur.currentPlayerId,
-      })
+  gameId: cur.gameId,
+  playerId: cur.currentPlayerId,
+})
+
+console.log('========== STAY RESPONSE ==========')
+console.log(JSON.stringify(result, null, 2))
+
+console.log('========== SUMMARY ==========')
+
+result.players?.forEach((p) => {
+  console.log({
+    player: p.name,
+    status: p.status,
+    score: p.roundScore,
+    cards: p.cards?.map(
+      (c) =>
+        c.value ??
+        c.type ??
+        c.modifier
+    ),
+  })
+})
       dispatch({ type: 'STATE_UPDATED', payload: result })
       handleAutomaticEvent(result.lastAutomaticEvent, result.players, addToast)
       handlePendingAction(result.pendingAction, result.players, addToast)
@@ -269,24 +360,80 @@ export function useGameActions() {
   }, [dispatch, addToast])
 
   const applyAction = useCallback(async (targetId) => {
-    const cur = stateRef.current
-    const pending = cur.pendingAction
-    if (!pending) return null
-    dispatch({ type: 'SET_LOADING', payload: true })
-    try {
-      const result = await api.applyAction({
-        gameId: cur.gameId,
-        targetPlayerId: targetId,
+  const cur = stateRef.current
+  const pending = cur.pendingAction
+
+  if (!pending) return null
+
+  dispatch({ type: 'SET_LOADING', payload: true })
+
+  try {
+    console.log('========== APPLY ACTION ==========')
+
+    console.log({
+      pending,
+      sourcePlayer: pending?.sourcePlayerId,
+      targetPlayer: targetId,
+      actionType: pending?.actionType,
+    })
+
+    const result = await api.applyAction({
+      gameId: cur.gameId,
+      targetPlayerId: targetId,
+    })
+
+    console.log('========== ACTION RESPONSE ==========')
+    console.log(JSON.stringify(result, null, 2))
+
+    console.log('========== SUMMARY ==========')
+
+    result.players?.forEach((p) => {
+      console.log({
+        player: p.name,
+        status: p.status,
+        score: p.roundScore,
+        cards: p.cards?.map(
+          (c) =>
+            c.value ??
+            c.type ??
+            c.modifier
+        ),
       })
-      dispatch({ type: 'STATE_UPDATED', payload: result })
-      handleAutomaticEvent(result.lastAutomaticEvent, result.players, addToast)
-      handlePendingAction(result.pendingAction, result.players, addToast)
-      return result
-    } catch (err) {
-      dispatch({ type: 'SET_ERROR', payload: err.message })
-      return null
-    }
-  }, [dispatch, addToast])
+    })
+
+    dispatch({ type: 'STATE_UPDATED', payload: result })
+
+    handleAutomaticEvent(
+      result.lastAutomaticEvent,
+      result.players,
+      addToast
+    )
+
+    handlePendingAction(
+      result.pendingAction,
+      result.players,
+      addToast
+    )
+
+    return result
+  } catch (err) {
+    console.error('========== ACTION ERROR ==========')
+    console.error(err)
+
+    console.log({
+      status: err.status,
+      errorCode: err.errorCode,
+      rawMessage: err.rawMessage,
+      message: err.message,
+    })
+
+    dispatch({ type: 'SET_ERROR', payload: err.message })
+
+    return null
+  }
+}, [dispatch, addToast])
+
+
 
   const resetGame = useCallback(() => {
     dispatch({ type: 'RESET' })
@@ -304,20 +451,20 @@ export function useGameActions() {
   }
 }
 
-// ─── Manejadores de eventos del backend ─────────────────────────────────────
+// ─── Backend event handlers ──────────────────────────────────────────────────
 
 const playerName = (players, id) =>
-  players.find((p) => p.id === id)?.name || 'Jugador'
+  players.find((p) => p.id === id)?.name || 'Player'
 
-// Muestra el evento automático del backend (no persistente) como toast.
-// El backend envía `lastAutomaticEvent` solo cuando ocurrió en la mutación
-// más reciente; es de un solo uso.
+// Shows the backend's automatic event (non-persistent) as a toast.
+// The backend sends `lastAutomaticEvent` only when it occurred in the most
+// recent mutation; it is single-use.
 function handleAutomaticEvent(event, players, addToast) {
   if (!event) return
   switch (event.type) {
     case 'SECOND_CHANCE_CONSUMED':
       addToast(
-        `💛 Second Chance salvó a ${playerName(players, event.playerId)} del eliminado.`,
+        `💛 Second Chance saved ${playerName(players, event.playerId)} from being busted.`,
         'success'
       )
       break
@@ -326,10 +473,10 @@ function handleAutomaticEvent(event, players, addToast) {
   }
 }
 
-// Muestra un toast cuando hay una acción pendiente nueva para que el jugador
-// objetivo sepa que debe elegir a quién aplicarla.
+// Shows a toast when there is a new pending action so the source player
+// knows they must choose who to apply it to.
 function handlePendingAction(pending, players, addToast) {
   if (!pending) return
   const name = playerName(players, pending.sourcePlayerId)
-  addToast(`🎴 ${name} robó una carta de acción — elige un objetivo.`, 'warning')
+  addToast(`🎴 ${name} drew an action card — choose a target.`, 'warning')
 }
