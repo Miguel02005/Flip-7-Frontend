@@ -1,0 +1,18 @@
+{
+  "name": "flip7-e2e",
+  "version": "1.0.0",
+  "description": "Tests E2E Cucumber + Playwright para Flip 7",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:headed": "cucumber-js",
+    "test:headless": "HEADLESS=true cucumber-js"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^10.9.0",
+    "playwright": "^1.60.0"
+  },
+  "main": "cucumber.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
