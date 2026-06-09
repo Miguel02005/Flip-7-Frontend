@@ -1,20 +1,24 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Lobby / Home — felt background, decorative cards, prominent Play button
+   Lobby / Home — themed to match the active palette.
+   The light theme shows a cream/warm hero with orange accents. The dark
+   theme keeps the original felt-green look but with a coherent token set.
    ───────────────────────────────────────────────────────────────────────── */
 
 .lobby {
   position: relative;
   min-height: calc(100svh - 0px);
-  padding: 48px 24px 64px;
+  padding: 56px 24px 72px;
   box-sizing: border-box;
   background:
-    radial-gradient(circle at 20% 0%, rgba(255, 216, 107, 0.08), transparent 60%),
-    radial-gradient(circle at 80% 100%, rgba(116, 185, 255, 0.06), transparent 60%),
-    linear-gradient(160deg, var(--felt-dark), var(--felt));
-  color: #f5f1e8;
+    radial-gradient(circle at 18% 0%, var(--accent-soft), transparent 55%),
+    radial-gradient(circle at 82% 100%, var(--gold-soft), transparent 60%),
+    linear-gradient(180deg, var(--bg-main), var(--bg-surface-2));
+  color: var(--text-primary);
   overflow: hidden;
+  transition: background 0.25s ease;
 }
 
+/* ─── Layout ─── */
 .lobby__content {
   position: relative;
   z-index: 1;
@@ -23,22 +27,37 @@
   text-align: center;
 }
 
+/* ─── Title: "FLIP" in heavy dark + "7" in orange/amber with a color shadow ─── */
 .lobby__title {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
   font-family: var(--heading);
-  font-size: 72px;
-  font-weight: 800;
-  letter-spacing: -2px;
-  margin: 16px 0 12px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-strong));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 4px 24px rgba(255, 216, 107, 0.25);
+  font-size: 88px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  margin: 8px 0 8px;
+  line-height: 1;
+}
+
+.lobby__title-flip {
+  color: var(--text-primary);
+  text-shadow: 0 2px 0 var(--border-strong);
+}
+
+.lobby__title-seven {
+  color: var(--accent);
+  text-shadow:
+    0 2px 0 var(--accent-hover),
+    0 8px 24px var(--accent-soft);
+  transform: rotate(-3deg);
+  display: inline-block;
 }
 
 .lobby__tagline {
-  font-size: 18px;
-  color: rgba(245, 241, 232, 0.85);
+  font-size: 17px;
+  color: var(--text-secondary);
   margin: 0 0 32px;
 }
 
@@ -48,26 +67,25 @@
   gap: 12px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
-/* ─── The big gold Play button ─── */
+/* ─── The big orange Play button ─── */
 .lobby__play {
   font-family: var(--sans);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  padding: 16px 40px;
+  padding: 16px 44px;
   border-radius: 999px;
-  border: 2px solid #b8860b;
-  background: linear-gradient(180deg, #ffe49a, var(--gold) 50%, var(--gold-strong));
-  color: #3b2700;
+  border: 1px solid var(--accent-hover);
+  background: var(--accent);
+  color: var(--accent-text);
   cursor: pointer;
   box-shadow:
-    0 6px 0 #8a5a00,
-    0 12px 24px rgba(0, 0, 0, 0.35),
-    0 0 32px rgba(255, 216, 107, 0.4);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+    0 4px 0 var(--accent-hover),
+    0 12px 28px var(--accent-soft);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -76,74 +94,105 @@
 .lobby__play:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 8px 0 #8a5a00,
-    0 16px 28px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(255, 216, 107, 0.55);
+    0 6px 0 var(--accent-hover),
+    0 18px 32px var(--accent-soft);
 }
 
 .lobby__play:active {
   transform: translateY(2px);
   box-shadow:
-    0 3px 0 #8a5a00,
-    0 6px 14px rgba(0, 0, 0, 0.4);
+    0 2px 0 var(--accent-hover),
+    0 8px 18px var(--accent-soft);
 }
 
 .lobby__play-icon {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
 }
 
-/* ─── Secondary lobby buttons (Continue / History) ─── */
+/* ─── Secondary lobby buttons ─── */
 .lobby__secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f1e8;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-strong);
   border-radius: 999px;
   padding: 12px 24px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.12s ease, transform 0.12s ease, border-color 0.12s ease;
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 
 .lobby__secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--bg-surface-2);
+  border-color: var(--text-secondary);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ─── "How to play" panel ─── */
 .lobby__howto {
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 20px 28px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 28px;
   text-align: left;
   max-width: 600px;
   margin: 0 auto;
+  box-shadow: var(--shadow-md);
 }
 
 .lobby__howto h2 {
-  font-size: 18px;
-  color: var(--gold);
-  margin: 0 0 12px;
-  letter-spacing: 0.5px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
+  font-weight: 800;
 }
 
 .lobby__howto ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 0;
+  list-style: none;
   line-height: 1.7;
-  color: rgba(245, 241, 232, 0.9);
+  color: var(--text-secondary);
   font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lobby__howto li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .lobby__howto strong {
-  color: var(--gold);
+  color: var(--text-primary);
 }
 
-/* ─── Decorative floating cards (the .card--num-N classes give them colors) ─── */
+.lobby__howto-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.lobby__howto-tag--deal   { background: var(--ice-soft);     color: var(--ice); }
+.lobby__howto-tag--draw   { background: var(--accent-soft);  color: var(--accent-hover); }
+.lobby__howto-tag--bust   { background: var(--ruby-soft);    color: var(--ruby); }
+.lobby__howto-tag--flip7  { background: var(--gold);         color: #1a1410; }
+.lobby__howto-tag--action { background: var(--emerald-soft); color: var(--emerald); }
+.lobby__howto-tag--win    { background: var(--accent);       color: var(--accent-text); }
+
+/* ─── Decorative floating cards (positioned in the corners) ─── */
 .lobby__cards {
   position: absolute;
   inset: 0;
@@ -155,57 +204,65 @@
   position: absolute;
   width: 78px;
   height: 110px;
-  background: #fbf6e6;
-  border: 2px solid #2e303a;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
   border-bottom-width: 4px;
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--heading);
-  font-size: 36px;
   font-weight: 800;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-  opacity: 0.85;
+  box-shadow: var(--shadow-md);
+  opacity: 0.92;
+}
+
+.lobby__card-num {
+  font-size: 40px;
+  line-height: 1;
+  color: inherit;
+  font-weight: 800;
 }
 
 .lobby__card--1 {
-  top: 8%;
-  left: 6%;
+  top: 6%;
+  left: 4%;
   --rot: -12deg;
   transform: rotate(-12deg);
   animation: card-float 6s ease-in-out infinite;
 }
 
 .lobby__card--2 {
-  top: 12%;
-  right: 8%;
+  top: 10%;
+  right: 6%;
   --rot: 14deg;
   transform: rotate(14deg);
   animation: card-float 7s ease-in-out infinite 0.5s;
 }
 
 .lobby__card--3 {
-  bottom: 18%;
-  left: 10%;
+  bottom: 16%;
+  left: 6%;
   --rot: 8deg;
   transform: rotate(8deg);
   animation: card-float 8s ease-in-out infinite 1s;
 }
 
 .lobby__card--4 {
-  bottom: 12%;
-  right: 6%;
+  bottom: 10%;
+  right: 4%;
   --rot: -10deg;
   transform: rotate(-10deg);
   animation: card-float 6.5s ease-in-out infinite 1.5s;
 }
 
 @media (max-width: 700px) {
-  .lobby__title { font-size: 48px; }
-  .lobby__card { width: 60px; height: 86px; font-size: 28px; }
-  .lobby__card--1 { top: 4%; left: 4%; }
-  .lobby__card--2 { top: 6%; right: 4%; }
-  .lobby__card--3 { bottom: 8%; left: 4%; }
-  .lobby__card--4 { bottom: 6%; right: 4%; }
+  .lobby__title { font-size: 56px; gap: 6px; letter-spacing: -2px; }
+  .lobby__title-seven { transform: rotate(-2deg); }
+  .lobby__card { width: 58px; height: 84px; }
+  .lobby__card-num { font-size: 30px; }
+  .lobby__card--1 { top: 3%; left: 3%; }
+  .lobby__card--2 { top: 5%; right: 3%; }
+  .lobby__card--3 { bottom: 6%; left: 3%; }
+  .lobby__card--4 { bottom: 4%; right: 3%; }
 }

@@ -60,19 +60,28 @@ export default function Board({
               </tr>
             </thead>
             <tbody>
-              {lastRound.scores.map((s) => (
-                <tr key={s.playerId}>
-                  <td>{s.playerName}</td>
-                  <td>
-                    {s.flippedSeven
-                      ? '⭐ Flip 7!'
-                      : s.busted
-                      ? 'Bust'
-                      : 'Stayed'}
-                  </td>
-                  <td>{s.score}</td>
-                </tr>
-              ))}
+              {lastRound.scores.map((s) => {
+                const variant = s.flippedSeven
+                  ? 'flip7'
+                  : s.busted
+                  ? 'bust'
+                  : 'stayed'
+                return (
+                  <tr key={s.playerId}>
+                    <td>{s.playerName}</td>
+                    <td>
+                      <span className={`summary-badge summary-badge--${variant}`}>
+                        {s.flippedSeven
+                          ? '⭐ Flip 7'
+                          : s.busted
+                          ? 'Bust'
+                          : 'Stayed'}
+                      </span>
+                    </td>
+                    <td className="board__round-score">{s.score}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

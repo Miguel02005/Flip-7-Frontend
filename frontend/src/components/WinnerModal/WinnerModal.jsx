@@ -20,17 +20,38 @@ export default function WinnerModal({ winner, players, onClose }) {
         <div className="winner-modal__score">
           Final score: <strong>{winner.totalScore}</strong> points
         </div>
-        <div className="winner-modal__scores">
-          {sorted.map((p) => (
-            <div key={p.id}>
-              <span>{p.name}</span>
-              <strong>{p.totalScore}</strong>
+        <div className="winner-modal__podium">
+          {sorted.slice(0, 3).map((p, idx) => (
+            <div
+              key={p.id}
+              className={`winner-modal__podium-step winner-modal__podium-step--${idx + 1}`}
+            >
+              <div className="winner-modal__podium-medal">
+                {idx + 1}
+              </div>
+              <div className="winner-modal__podium-name">{p.name}</div>
+              <div className="winner-modal__podium-score">{p.totalScore}</div>
             </div>
           ))}
         </div>
-        <button className="winner-modal__close" onClick={onClose}>
-          Close
-        </button>
+        {sorted.length > 3 && (
+          <div className="winner-modal__scores">
+            {sorted.slice(3).map((p) => (
+              <div key={p.id} className="winner-modal__score-row">
+                <span>{p.name}</span>
+                <strong>{p.totalScore}</strong>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="winner-modal__actions">
+          <button className="winner-modal__play-again" onClick={onClose}>
+            Play Again
+          </button>
+          <button className="winner-modal__back" onClick={onClose}>
+            Back to Lobby
+          </button>
+        </div>
       </div>
     </div>
   )

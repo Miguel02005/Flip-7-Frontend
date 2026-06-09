@@ -1,7 +1,3 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   FLIP 7  —  Card component
-   ───────────────────────────────────────────────────────────────────────────── */
-
 .card {
   display: inline-flex;
   flex-direction: column;
@@ -10,22 +6,22 @@
   width: 70px;
   height: 100px;
   border-radius: 10px;
-  background: #fbf6e6;
-  border: 2px solid #2e303a;
-  color: #08060d;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  color: var(--card-ink);
   font-family: var(--heading);
   font-weight: 600;
   font-size: 16px;
   padding: 4px;
   box-sizing: border-box;
   user-select: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
   position: relative;
   flex-shrink: 0;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* ─── Esquinas ─────────────────────────────────────────────────────────────── */
+/* ─── Esquinas ─── */
 
 .card-corner {
   position: absolute;
@@ -46,7 +42,7 @@
   transform: rotate(180deg);
 }
 
-/* ─── Contenido central ────────────────────────────────────────────────────── */
+/* ─── Contenido central ─── */
 
 .card-label {
   font-size: 9px;
@@ -67,15 +63,32 @@
   color: inherit;
 }
 
-/* ─── Carta numérica base ──────────────────────────────────────────────────── */
+/* Number name (ONE / TWO / …) — small uppercase label below the value. */
+.card-number-name {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  font-size: 7px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: center;
+  opacity: 0.5;
+  color: var(--card-ink);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ─── Carta numérica base ─── */
 
 .card--number {
-  background: #fbf6e6;
-  color: #08060d;
+  background: var(--card-bg);
+  color: var(--card-ink);
   border-bottom-width: 4px;
 }
 
-/* ─── Paleta de colores por número (igual al juego físico) ────────────────── */
+/* ─── Paleta de colores por número (igual al juego físico) ─── */
 
 .card--num-0  { color: #9b59b6; border-bottom-color: #9b59b6; }
 .card--num-1  { color: #e74c3c; border-bottom-color: #e74c3c; }
@@ -91,7 +104,7 @@
 .card--num-11 { color: #3498db; border-bottom-color: #3498db; }
 .card--num-12 { color: #95a5a6; border-bottom-color: #7f8c8d; }
 
-/* ─── Modificadora (+2, +4, +6, +8, +10, x2) ─────────────────────────────── */
+/* ─── Modificadora (+2, +4, +6, +8, +10, x2) ─── */
 
 .card--modifier {
   background: linear-gradient(180deg, #ffe49a, #ffd86b);
@@ -109,7 +122,7 @@
   color: #5a3a00;
 }
 
-/* ─── Acción: Freeze ───────────────────────────────────────────────────────── */
+/* ─── Acción: Freeze ─── */
 
 .card--action-freeze {
   background: linear-gradient(180deg, #e6f3ff, #cfe8ff);
@@ -133,7 +146,7 @@
   font-size: 12px;
 }
 
-/* ─── Acción: Flip Three ───────────────────────────────────────────────────── */
+/* ─── Acción: Flip Three ─── */
 
 .card--action-flip-three {
   background: linear-gradient(180deg, #fffacf, #fff7a8);
@@ -157,7 +170,7 @@
   color: #6d4d00;
 }
 
-/* ─── Acción: Second Chance ────────────────────────────────────────────────── */
+/* ─── Acción: Second Chance ─── */
 
 .card--action-second-chance {
   background: linear-gradient(180deg, #ffe1d2, #ffc7a8);
@@ -181,7 +194,7 @@
   font-size: 12px;
 }
 
-/* ─── Tamaño pequeño ───────────────────────────────────────────────────────── */
+/* ─── Tamaño pequeño ─── */
 
 .card--small {
   width: 52px;
@@ -214,7 +227,12 @@
   font-size: 18px;
 }
 
-/* ─── Carta boca abajo ─────────────────────────────────────────────────────── */
+.card--small .card-number-name {
+  font-size: 6px;
+  bottom: 3px;
+}
+
+/* ─── Carta boca abajo ─── */
 
 .card--back {
   background:
@@ -226,7 +244,7 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
-/* ─── Estados interactivos ─────────────────────────────────────────────────── */
+/* ─── Estados interactivos ─── */
 
 .card--clickable {
   cursor: pointer;
@@ -239,11 +257,11 @@
 }
 
 .card--selected {
-  outline: 3px solid #aa3bff;
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 
 .card--highlighted {
-  outline: 3px solid #c2185b;
+  outline: 3px solid var(--ruby);
   outline-offset: 2px;
 }

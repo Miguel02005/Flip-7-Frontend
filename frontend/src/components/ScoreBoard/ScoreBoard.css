@@ -2,11 +2,12 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 12px 16px;
-  background: var(--code-bg);
+  padding: 14px 16px;
+  background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 14px;
   min-width: 220px;
+  box-shadow: var(--shadow-md);
 }
 
 .score-board__title {
@@ -14,8 +15,8 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
 }
 
 .score-board__row {
@@ -23,8 +24,11 @@
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  padding: 4px 0;
-  border-bottom: 1px dashed var(--border);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
 }
 
 .score-board__row:last-child {
@@ -32,37 +36,45 @@
 }
 
 .score-board__row--leader {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+}
+
+.score-board__row--leader .score-board__name {
   font-weight: 700;
-  color: #08060d;
+  color: var(--text-primary);
 }
 
 .score-board__row--leader .score-board__name::before {
   content: '★ ';
-  color: #ff8c00;
+  color: var(--gold);
 }
 
 .score-board__row--busted {
-  opacity: 0.5;
+  opacity: 0.55;
   text-decoration: line-through;
-  text-decoration-color: #c2185b;
+  text-decoration-color: var(--ruby);
   text-decoration-thickness: 2px;
 }
 
 .score-board__row--busted .score-board__name {
-  color: var(--text);
+  color: var(--text-muted);
 }
 
 .score-board__name {
-  color: var(--text-h);
+  color: var(--text-primary);
 }
 
 .score-board__total {
+  font-family: var(--mono);
   font-weight: 700;
-  color: var(--text-h);
+  font-size: 15px;
+  color: var(--text-primary);
 }
 
 .score-board__round {
   font-size: 11px;
-  color: var(--text);
+  color: var(--text-muted);
   margin-left: 6px;
+  font-family: var(--mono);
 }

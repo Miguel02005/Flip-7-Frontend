@@ -1,3 +1,4 @@
+import { useCallback, useLayoutEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { GameProvider } from './store/gameContext.jsx'
 import HomePage from './pages/HomePage.jsx'
@@ -6,10 +7,70 @@ import HistoryPage from './pages/HistoryPage.jsx'
 import ToastContainer from './components/Toast/ToastContainer.jsx'
 import './App.css'
 
+const THEME_KEY = 'flip7-theme'
+const THEME_LIGHT = 'theme-light'
+const THEME_DARK = 'theme-dark'
+
+function readStoredTheme() {
+  if (typeof window === 'undefined') return THEME_LIGHT
+  try {
+    const stored = window.localStorage.getItem(THEME_KEY)
+    if (stored === THEME_DARK || stored === THEME_LIGHT) return stored
+  } catch {
+    /* localStorage may be unavailable (e.g. private mode); fall through */
+  }
+  return THEME_LIGHT
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement
+  if (theme === THEME_DARK) {
+    root.classList.add(THEME_DARK)
+    root.classList.remove(THEME_LIGHT)
+  } else {
+    root.classList.add(THEME_LIGHT)
+    root.classList.remove(THEME_DARK)
+  }
+}
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState(readStoredTheme)
+
+  // Apply theme synchronously before paint to avoid a flash of the wrong
+  // palette when navigating between pages or on first load.
+  useLayoutEffect(() => {
+    applyTheme(theme)
+    try {
+      window.localStorage.setItem(THEME_KEY, theme)
+    } catch {
+      /* ignore storage errors */
+    }
+  }, [theme])
+
+  const toggle = useCallback(() => {
+    setTheme((prev) => (prev === THEME_DARK ? THEME_LIGHT : THEME_DARK))
+  }, [])
+
+  const isDark = theme === THEME_DARK
+  return (
+    <button
+      type="button"
+      className="theme-toggle"
+      onClick={toggle}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      data-testid="theme-toggle"
+    >
+      <span aria-hidden="true">{isDark ? '☀' : '🌙'}</span>
+    </button>
+  )
+}
+
 export default function App() {
   return (
     <GameProvider>
       <BrowserRouter>
+        <ThemeToggle />
         <ToastContainer />
         <Routes>
           <Route path="/" element={<HomePage />} />

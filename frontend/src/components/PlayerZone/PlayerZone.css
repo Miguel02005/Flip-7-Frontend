@@ -4,44 +4,50 @@
   align-items: center;
   gap: 8px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 2px solid transparent;
-  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: 14px;
   min-width: 220px;
   position: relative;
-  transition: border-color 0.2s, background 0.2s;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    box-shadow 0.2s ease;
   box-sizing: border-box;
 }
 
-/* ─── Current player: gold border + soft glow pulse ─── */
+/* ─── Current player: accent border + soft glow (no exaggerated animation) ─── */
 .player-zone--current {
-  border-color: var(--gold);
-  background: rgba(255, 216, 107, 0.08);
-  animation: glow 2s ease-in-out infinite;
+  border-color: var(--accent);
+  background: var(--bg-surface);
+  box-shadow:
+    0 0 0 1px var(--accent-soft),
+    0 6px 20px var(--accent-soft);
 }
 
-/* ─── Targetable: red-pink border ─── */
+/* ─── Targetable: ruby border ─── */
 .player-zone--target {
-  border-color: #c2185b;
-  background: rgba(194, 24, 91, 0.1);
+  border-color: var(--ruby);
+  background: var(--ruby-soft);
   cursor: pointer;
 }
 
 .player-zone--target:hover {
-  background: rgba(194, 24, 91, 0.18);
+  background: var(--ruby-soft);
+  box-shadow: 0 4px 12px var(--ruby-soft);
 }
 
 /* ─── Stayed / Busted base states ─── */
 .player-zone--busted {
-  opacity: 0.55;
-  filter: grayscale(0.4);
+  opacity: 0.5;
 }
 
 .player-zone--stayed {
-  opacity: 0.75;
+  opacity: 0.85;
+  border-color: var(--emerald);
+  background: var(--emerald-soft);
 }
 
-/* ─── Frozen: blue-ice tint + border pulse, 1.6s ─── */
+/* ─── Frozen: ice tint + border pulse, 1.6s ─── */
 .player-zone--frozen {
   border-color: var(--ice);
   background: var(--ice-soft);
@@ -49,7 +55,7 @@
 }
 
 .player-zone--frozen.player-zone--current {
-  /* keep current gold accent by overriding border with a layered outline */
+  /* Freeze overrides the gold current accent; one strong cue at a time. */
   border-color: var(--ice);
   animation: freeze-pulse 1.6s ease-out 1;
 }
@@ -60,9 +66,8 @@
 }
 
 .player-zone--busted-anim.player-zone--busted {
-  /* bust flash overrides the steady busted state, then it returns */
+  /* The flash overrides the steady busted state, then reverts. */
   opacity: 1;
-  filter: none;
 }
 
 /* ─── Snowflake overlay (Freeze) ─── */
@@ -72,8 +77,8 @@
   left: 50%;
   transform: translate(-50%, -50%) scale(0.3);
   font-size: 88px;
-  color: #1976d2;
-  text-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+  color: var(--ice);
+  text-shadow: 0 4px 12px var(--ice-soft);
   pointer-events: none;
   z-index: 5;
   animation: snowflake-pop 1.5s ease-out 1 forwards;
@@ -110,7 +115,7 @@
 .player-zone__name {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -118,8 +123,8 @@
 
 .player-zone__dealer {
   font-size: 11px;
-  background: var(--gold);
-  color: #5a3a00;
+  background: var(--gold-soft);
+  color: var(--gold-strong);
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: 700;
@@ -129,8 +134,8 @@
 
 .player-zone__current {
   font-size: 11px;
-  background: var(--gold);
-  color: #5a3a00;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: 700;
@@ -142,31 +147,32 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .player-zone__status--active {
-  color: #2e7d32;
+  color: var(--emerald);
 }
 
 .player-zone__status--stayed {
-  color: #1976d2;
+  color: var(--emerald);
 }
 
 .player-zone__status--busted {
-  color: #c2185b;
+  color: var(--ruby);
 }
 
 .player-zone__scores {
   display: flex;
   gap: 12px;
   font-size: 13px;
-  color: var(--text);
+  color: var(--text-secondary);
 }
 
 .player-zone__scores strong {
-  color: var(--text-h);
+  color: var(--text-primary);
   font-size: 16px;
+  font-family: var(--mono);
 }
 
 .player-zone__hand {
@@ -176,28 +182,28 @@
   justify-content: center;
   min-height: 100px;
   align-items: center;
+  width: 100%;
+  padding: 8px;
+  background: var(--bg-surface-2);
+  border-radius: 10px;
+  border: 1px solid var(--border);
 }
 
 .player-zone__hand-empty {
   font-size: 12px;
-  color: var(--text);
+  color: var(--text-muted);
   font-style: italic;
-  opacity: 0.6;
 }
 
 .player-zone__flip7 {
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  color: #000;
+  background: linear-gradient(135deg, var(--gold), var(--gold-strong));
+  color: #1a1410;
   padding: 4px 10px;
   border-radius: 6px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 14px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  animation: glow 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  animation: flip7-in 0.4s ease-out 1, glow 1.5s ease-in-out infinite 0.4s;
+  box-shadow: var(--shadow-sm);
 }

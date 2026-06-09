@@ -7,6 +7,22 @@ function modifierLabel(modifier) {
   return modifier
 }
 
+const NUMBER_NAMES = {
+  0: 'ZERO',
+  1: 'ONE',
+  2: 'TWO',
+  3: 'THREE',
+  4: 'FOUR',
+  5: 'FIVE',
+  6: 'SIX',
+  7: 'SEVEN',
+  8: 'EIGHT',
+  9: 'NINE',
+  10: 'TEN',
+  11: 'ELEVEN',
+  12: 'TWELVE',
+}
+
 function cardVisual(card) {
   if (card.type === CARD_TYPES.NUMBER) {
     return {
@@ -14,6 +30,7 @@ function cardVisual(card) {
       label: '',
       icon: String(card.value),   // el número va en el icono central grande
       name: '',
+      numberName: NUMBER_NAMES[card.value] || '',
     }
   }
   if (card.type === CARD_TYPES.MODIFIER) {
@@ -71,7 +88,7 @@ export default function Card({
 
   if (!card) return null
 
-  const { variantClass, label, icon, name } = cardVisual(card)
+  const { variantClass, label, icon, name, numberName } = cardVisual(card)
 
   const className = [
     'card',
@@ -101,6 +118,9 @@ export default function Card({
 
       {/* Nombre de la acción (solo en cartas de acción, no en números) */}
       {name && <span className="card-label">{name}</span>}
+
+      {/* Nombre del número (ONE / TWO / …), solo en cartas numéricas */}
+      {numberName && <span className="card-number-name">{numberName}</span>}
 
       {/* Esquina inferior derecha (invertida) */}
       <span className="card-corner card-corner--br">{icon}</span>

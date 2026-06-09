@@ -104,7 +104,7 @@ export default function GamePage() {
   }
 
   return (
-    <div className="game-page" data-testid="game-page" style={{ padding: 16 }}>
+    <div className="game-page" data-testid="game-page">
       <Board
         players={game.players}
         currentPlayerId={game.currentPlayerId}
@@ -116,6 +116,7 @@ export default function GamePage() {
         deckRemaining={game.deckRemaining}
         roundHistory={game.roundHistory}
         loading={game.loading}
+        events={game.events}
         onPlayerTargetClick={handlePlayerTarget}
       >
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>

@@ -2,22 +2,23 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px 20px;
-  background: var(--code-bg);
+  padding: 20px;
+  background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 14px;
   min-width: 280px;
+  box-shadow: var(--shadow-md);
 }
 
 .game-setup__title {
   font-size: 18px;
   font-weight: 700;
-  color: var(--text-h);
+  color: var(--text-primary);
 }
 
 .game-setup__subtitle {
   font-size: 12px;
-  color: var(--text);
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
@@ -38,31 +39,34 @@
   font-family: var(--sans);
   font-size: 14px;
   padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: #5531d3;
-  color: var(--text-h);
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .game-setup__player-row input:focus {
-  outline: 2px solid #aa3bff;
+  outline: 2px solid var(--accent);
   outline-offset: 1px;
+  border-color: var(--accent);
 }
 
 .game-setup__remove {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .game-setup__remove:hover:not(:disabled) {
-  background: rgba(194, 24, 91, 0.1);
-  color: #c2185b;
-  border-color: #c2185b;
+  background: var(--ruby-soft);
+  color: var(--ruby);
+  border-color: var(--ruby);
 }
 
 .game-setup__remove:disabled {
@@ -71,45 +75,56 @@
 }
 
 .game-setup__add {
-  background: #4139cc;
-  border: 1px dashed var(--border);
-  color: var(--text-h);
+  background: var(--bg-surface-2);
+  border: 1px dashed var(--border-strong);
+  color: var(--text-primary);
   padding: 8px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.game-setup__add:hover {
-  background: rgba(170, 59, 255, 0.08);
-  border-color: #aa3bff;
-  color: #aa3bff;
+.game-setup__add:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-hover);
+}
+
+.game-setup__add:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .game-setup__start {
-  background: #aa3bff;
-  color: #fff;
-  border: 1px solid #6b21a8;
-  padding: 10px;
-  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 1px solid var(--accent-hover);
+  padding: 12px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.5px;
+  box-shadow: 0 4px 14px var(--accent-soft);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .game-setup__start:hover:not(:disabled) {
-  background: #9333ea;
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--accent-soft);
 }
 
 .game-setup__start:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .game-setup__error {
   font-size: 13px;
-  color: #c2185b;
+  color: var(--ruby);
   margin-top: 4px;
 }
