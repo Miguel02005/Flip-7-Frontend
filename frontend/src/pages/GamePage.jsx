@@ -101,6 +101,25 @@ export default function GamePage() {
 
   return (
     <div className="game-page" data-testid="game-page">
+      <div className="game-page__secondary-nav" data-testid="secondary-nav">
+        <button
+          onClick={() => navigate('/history')}
+          className="btn btn--secondary game-page__nav-btn"
+          data-testid="nav-history"
+        >
+          <span className="btn__icon" aria-hidden="true">📜</span>
+          <span>View History</span>
+        </button>
+        <button
+          onClick={handleNewGame}
+          className="btn btn--secondary game-page__nav-btn"
+          data-testid="reset-game"
+        >
+          <span className="btn__icon" aria-hidden="true">↺</span>
+          <span>Reset Game</span>
+        </button>
+      </div>
+
       <Board
         players={game.players}
         currentPlayerId={game.currentPlayerId}
@@ -125,21 +144,19 @@ export default function GamePage() {
         </div>
       </Board>
 
-      <div className="board__controls board__controls--sticky">
-        <ActionPanel
-          status={game.status}
-          currentPlayer={currentPlayer}
-          pendingAction={pendingActionWithName}
-          activePlayers={activePlayers}
-          loading={game.loading}
-          onDraw={drawCard}
-          onStay={stay}
-          onApplyAction={applyAction}
-          onStartNextRound={handleStartNext}
-          onStartFirstRound={handleStartNext}
-          onNewGame={handleNewGame}
-        />
-      </div>
+      <ActionPanel
+        status={game.status}
+        currentPlayer={currentPlayer}
+        pendingAction={pendingActionWithName}
+        activePlayers={activePlayers}
+        loading={game.loading}
+        onDraw={drawCard}
+        onStay={stay}
+        onApplyAction={applyAction}
+        onStartNextRound={handleStartNext}
+        onStartFirstRound={handleStartNext}
+        onNewGame={handleNewGame}
+      />
 
       {game.status === STATUS.GAME_OVER && game.winner && (
         <WinnerModal
@@ -152,30 +169,12 @@ export default function GamePage() {
       {game.error && (
         <div
           className="toast toast--danger"
-          style={{ position: 'fixed', bottom: 16, left: 16 }}
+          style={{ position: 'fixed', bottom: 120, left: 16 }}
           data-testid="error-toast"
         >
           {game.error}
         </div>
       )}
-
-      <div style={{ marginTop: 16, textAlign: 'center' }}>
-        <button
-          onClick={() => navigate('/history')}
-          className="btn btn--secondary"
-          data-testid="nav-history"
-        >
-          View History
-        </button>
-        <button
-          onClick={handleNewGame}
-          className="btn btn--secondary"
-          style={{ marginLeft: 8 }}
-          data-testid="reset-game"
-        >
-          Reset Game
-        </button>
-      </div>
     </div>
   )
 }

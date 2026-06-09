@@ -49,10 +49,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-.board__controls {
-  width: 100%;
-}
-
 .board__table-empty {
   grid-column: 1 / -1;
   text-align: center;

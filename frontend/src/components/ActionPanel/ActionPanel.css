@@ -1,39 +1,211 @@
-.action-panel {
+/* ─────────────────────────────────────────────────────────────────────────
+   ActionPanel — persistent game HUD bar.
+   Inspired by Hearthstone / Marvel Snap / Balatro bottom action decks.
+   The bar is fixed to the bottom of the viewport, frosted-glass styled,
+   and adapts to mobile / tablet / desktop.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ─── Outer bar (fixed to viewport) ────────────────────────────────────── */
+
+.action-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 40;
+  width: min(960px, calc(100vw - 32px));
+  pointer-events: none; /* re-enabled on the inner so the rest of the page is still clickable */
+  animation: action-bar-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes action-bar-in {
+  from {
+    transform: translateX(-50%) translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.action-bar__inner {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 12px 32px rgba(20, 20, 10, 0.18),
+    0 2px 8px rgba(20, 20, 10, 0.10);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Slim gold accent line across the top — the "deck seam". */
+.action-bar__inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-strong) 20%,
+    var(--gold) 50%,
+    var(--gold-strong) 80%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.theme-dark .action-bar__inner {
+  background: rgba(20, 40, 36, 0.78);
+  border-color: var(--border-strong);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Turn pill (left side) ─────────────────────────────────────────────── */
+
+.action-bar__turn {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 20px;
-  background: var(--bg-surface);
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  min-height: 80px;
-  box-shadow: var(--shadow-md);
+  justify-content: center;
+  gap: 2px;
+  min-width: 140px;
+  max-width: 220px;
+  padding: 6px 14px 6px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px 12px 12px 4px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-soft) 0%,
+    transparent 100%
+  );
+  flex-shrink: 0;
 }
 
-.action-panel__title {
-  font-size: 14px;
+.action-bar__turn--active {
+  border-left-color: var(--gold);
+  background: linear-gradient(90deg, var(--gold-soft) 0%, transparent 100%);
+}
+
+.action-bar__turn--pending {
+  border-left-color: var(--ruby);
+  background: linear-gradient(90deg, var(--ruby-soft) 0%, transparent 100%);
+}
+
+.action-bar__turn--roundend {
+  border-left-color: var(--emerald);
+  background: linear-gradient(90deg, var(--emerald-soft) 0%, transparent 100%);
+}
+
+.action-bar__turn--gameover {
+  border-left-color: var(--ice);
+  background: linear-gradient(90deg, var(--ice-soft) 0%, transparent 100%);
+}
+
+.action-bar__turn--idle {
+  border-left-color: var(--border-strong);
+  background: transparent;
+}
+
+.action-bar__turn-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  letter-spacing: 1px;
   color: var(--text-muted);
+  line-height: 1;
+}
+
+.action-bar__turn-name {
+  font-size: 15px;
   font-weight: 700;
-}
-
-.action-panel__message {
-  font-size: 16px;
   color: var(--text-primary);
-  text-align: center;
-  max-width: 600px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.action-panel__buttons {
+/* ─── Action cluster (right side) ───────────────────────────────────────── */
+
+.action-bar__buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.action-bar__buttons--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.action-bar__waiting {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Pending-action reveal: shrink the action card so it fits in the bar. */
+.action-bar__pending-card {
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-/* ─── Base button ─── */
+.action-bar__pending-card .action-card-reveal {
+  transform: scale(0.62);
+  transform-origin: left center;
+  margin: -32px 0;
+}
+
+.action-bar__pending-card .action-card-reveal__caption {
+  display: none;
+}
+
+.action-bar__pending-info {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  text-align: left;
+}
+
+.action-bar__pending-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.action-bar__pending-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  max-width: 280px;
+  text-align: right;
+}
+
+/* ─── Shared button base (used by the bar) ─────────────────────────────── */
 
 .btn {
   font-family: var(--sans);
@@ -112,7 +284,7 @@
   background: #26804b;
 }
 
-/* ─── Action panel: Draw (orange/amber pill) and Stay (outline pill) ─── */
+/* ─── Draw (orange/amber pill) and Stay (outline pill) ─────────────────── */
 
 .btn__icon {
   display: inline-block;
@@ -164,4 +336,103 @@
 
 .btn--stay:active:not(:disabled) {
   transform: translateY(0);
+}
+
+/* ─── Tablet (901px - 1199px) ──────────────────────────────────────────── */
+
+@media (max-width: 1199px) {
+  .action-bar__turn {
+    min-width: 110px;
+    max-width: 160px;
+    padding: 4px 10px 4px 10px;
+  }
+  .action-bar__turn-label {
+    font-size: 9px;
+  }
+  .action-bar__turn-name {
+    font-size: 13px;
+  }
+  .action-bar__pending-info {
+    display: none;
+  }
+  .action-bar__pending-hint {
+    display: none;
+  }
+}
+
+/* ─── Mobile (< 900px) — bottom dock style ─────────────────────────────── */
+
+@media (max-width: 900px) {
+  .action-bar {
+    bottom: 0;
+    width: 100vw;
+  }
+  .action-bar__inner {
+    border-radius: 18px 18px 0 0;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .action-bar__inner::before {
+    left: 24px;
+    right: 24px;
+  }
+  .action-bar__turn {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-left-width: 4px;
+    border-radius: 6px;
+  }
+  .action-bar__turn-label {
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+  .action-bar__turn-name {
+    font-size: 14px;
+    flex: 1;
+  }
+  .action-bar__buttons {
+    flex: 1 1 100%;
+    justify-content: stretch;
+    gap: 8px;
+  }
+  .action-bar__buttons .btn {
+    flex: 1;
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+  .action-bar__pending-card {
+    flex: 0 0 auto;
+  }
+  .action-bar__pending-card .action-card-reveal {
+    transform: scale(0.5);
+    margin: -42px 0;
+  }
+  .action-bar__pending-row {
+    justify-content: stretch;
+  }
+  .action-bar__pending-row .btn {
+    flex: 1;
+  }
+  .action-bar__pending-hint {
+    display: none;
+  }
+}
+
+/* ─── Very narrow phones (< 480px) ────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .action-bar__turn-name {
+    font-size: 13px;
+  }
+  .btn--draw,
+  .btn--stay {
+    padding: 12px 12px;
+    font-size: 14px;
+  }
 }
