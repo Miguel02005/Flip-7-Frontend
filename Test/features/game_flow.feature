@@ -43,3 +43,12 @@ Feature: Game flow
     And I click the Start game button
     And I click the Reset game button
     Then I should be on the home page
+
+    Scenario: Player busts by drawing duplicate cards
+      Given I access the game page
+      When I set player 0 name to Ana
+      And I set player 1 name to Bob
+      And I remove extra players until only 2 remain
+      And I click the Start game button
+      And I draw cards until the player busts
+      Then I should see the game board

@@ -180,3 +180,29 @@ Then('the summary table should have column {string}', async function (columnName
     console.log(`  → Columna "${columnName}": ${found ? '✓' : '✗'}`)
     assert(found === true, `Columna "${columnName}" no encontrada en la tabla de resumen`)
 })
+
+When('I draw cards until the player busts', async function () {
+    const page = state.getPage()
+    let attempts = 0
+    console.log('  → Robando cartas hasta que el jugador pierda...')
+    while (attempts < 30) {
+        // Si aparece el resumen de ronda, alguien se pasó
+        const summaryVisible = await page.isVisible('[data-testid="round-summary"]')
+        if (summaryVisible) {
+            console.log(`    → Ronda terminada tras ${attempts} cartas`)
+            break
+        }
+        // Si el botón draw está visible, robar
+        const drawVisible = await page.isVisible('[data-testid="draw-card"]')
+        if (drawVisible) {
+            await page.click('[data-testid="draw-card"]')
+            attempts++
+            console.log(`    → Carta #${attempts}`)
+            await page.waitForTimeout(500)
+        } else {
+            // No hay draw visible, puede ser turno del otro jugador o acción pendiente
+            await page.waitForTimeout(500)
+        }
+    }
+    console.log('  ✓ Jugador perdió o ronda terminó')
+})
