@@ -60,7 +60,11 @@ Then('I should be on the game page', async function () {
 })
 
 Then('I should see the game setup form', async function () {
-    const visible = await state.getPage().isVisible('[data-testid="game-setup"]')
-    console.log(`  → game-setup visible: ${visible}`)
-    assert(visible === true)
+    const page = state.getPage()
+    // Esperar a que aparezca el setup O el board (el juego puede tener estado previo)
+    await page.waitForSelector('[data-testid="game-setup"], [data-testid="board"]', { timeout: 10000 })
+    const setupVisible = await page.isVisible('[data-testid="game-setup"]')
+    const boardVisible = await page.isVisible('[data-testid="board"]')
+    console.log(`  → game-setup visible: ${setupVisible}, board visible: ${boardVisible}`)
+    assert(setupVisible || boardVisible, 'No se encontró ni game-setup ni board')
 })

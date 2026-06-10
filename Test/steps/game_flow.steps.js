@@ -1,7 +1,8 @@
-const { When, Then } = require('@cucumber/cucumber')
+const { When, Then, setDefaultTimeout } = require('@cucumber/cucumber')
 const assert = require('assert')
 const state = require('../support/state')
 
+setDefaultTimeout(30000)
 // ── Helper de diagnóstico ─────────────────────────────────────────────────────
 
 async function logDOM(page, label) {
@@ -59,24 +60,31 @@ When('I click the Start game button', async function () {
 })
 
 When('I click the Draw card button', async function () {
+    const page = state.getPage()
     console.log('  → Click en draw-card')
-    await state.getPage().click('[data-testid="draw-card"]')
+    await page.waitForSelector('[data-testid="draw-card"]', { timeout: 15000 })
+    await page.click('[data-testid="draw-card"]')
 })
 
 When('I click the Stay button', async function () {
+    const page = state.getPage()
     console.log('  → Click en stay')
-    await state.getPage().click('[data-testid="stay"]')
+    await page.waitForSelector('[data-testid="stay"]', { timeout: 15000 })
+    await page.click('[data-testid="stay"]')
 })
 
 When('I click the Reset game button', async function () {
+    const page = state.getPage()
     console.log('  → Click en reset-game')
-    await state.getPage().click('[data-testid="reset-game"]')
+    await page.waitForSelector('[data-testid="reset-game"]', { timeout: 15000 })
+    await page.click('[data-testid="reset-game"]')
 })
 
 When('I force the round to end by staying', async function () {
     const page = state.getPage()
     let attempts = 0
     console.log('  → Forzando fin de ronda con Stay repetido...')
+    await page.waitForSelector('[data-testid="stay"]', { timeout: 15000 })
     while (attempts < 20) {
         const stayVisible = await page.isVisible('[data-testid="stay"]')
         if (!stayVisible) {
@@ -93,7 +101,6 @@ When('I force the round to end by staying', async function () {
     console.log('  ✓ round-summary visible')
 })
 
-
 Then('I should see the game board', async function () {
     const board = await state.getPage().isVisible('[data-testid="board"]')
     console.log(`  → board visible: ${board}`)
@@ -101,13 +108,17 @@ Then('I should see the game board', async function () {
 })
 
 Then('the Draw card button should be enabled', async function () {
-    const disabled = await state.getPage().isDisabled('[data-testid="draw-card"]')
+    const page = state.getPage()
+    await page.waitForSelector('[data-testid="draw-card"]', { timeout: 15000 })
+    const disabled = await page.isDisabled('[data-testid="draw-card"]')
     console.log(`  → draw-card disabled: ${disabled}`)
     assert(disabled === false)
 })
 
 Then('the Stay button should be enabled', async function () {
-    const disabled = await state.getPage().isDisabled('[data-testid="stay"]')
+    const page = state.getPage()
+    await page.waitForSelector('[data-testid="stay"]', { timeout: 15000 })
+    const disabled = await page.isDisabled('[data-testid="stay"]')
     console.log(`  → stay disabled: ${disabled}`)
     assert(disabled === false)
 })
@@ -124,8 +135,16 @@ Then('I should be on the home page', async function () {
 Then('the action panel should contain {string}', async function (text) {
     const page = state.getPage()
     console.log(`  → Buscando .action-bar con texto "${text}"...`)
-    await page.waitForSelector('.action-bar', { timeout: 10000 })
-    const bodyText = await page.textContent('.action-bar')
+    const deadline = Date.now() + 15000
+    let bodyText = ''
+    while (Date.now() < deadline) {
+        const el = await page.$('.action-bar')
+        if (el) {
+            bodyText = await el.textContent()
+            if (bodyText.includes(text)) break
+        }
+        await page.waitForTimeout(300)
+    }
     console.log(`  → Panel: "${bodyText.trim().substring(0, 100)}"`)
     assert(bodyText.includes(text), `Esperaba "${text}" pero el panel dice: "${bodyText}"`)
 })

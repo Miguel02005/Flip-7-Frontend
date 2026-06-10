@@ -16,6 +16,6 @@ Feature: Scoreboard
     And I click the Start game button
     And I force the round to end by staying
     Then I should see the round summary
-    And the summary table should have column "Jugador"
-    And the summary table should have column "Resultado"
-    And the summary table should have column "Puntaje de ronda"
+    And the summary table should have column "Player"
+    And the summary table should have column "Result"
+    And the summary table should have column "Round Score"
