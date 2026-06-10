@@ -1,11 +1,26 @@
 /* ─────────────────────────────────────────────────────────────────────────
    ActionPanel — persistent game HUD bar.
-   Inspired by Hearthstone / Marvel Snap / Balatro bottom action decks.
-   The bar is fixed to the bottom of the viewport, frosted-glass styled,
-   and adapts to mobile / tablet / desktop.
+
+   Two visual states, decided by CSS only (no JSX changes):
+
+   • DEFAULT (no pending action):
+       Stays anchored to the bottom of the viewport as a compact horizontal
+       pill with the turn info on the left and Draw/Stay on the right.
+       (Same look & feel as before — Hearthstone / Marvel Snap bottom deck.)
+
+   • PENDING (action card needs a target):
+       The wrapper is re-anchored to the TOP of the viewport and compacted
+       into a single horizontal row:
+         [ card ] [ message + hint ] [ choose-me shortcut ]
+       The board stays fully visible underneath; PlayerZone targets are
+       clickable as before. The bar never grows tall enough to cover them.
+
+   The switch is done via the structural selector
+   `.action-bar:has(.action-bar__buttons--stacked)` (Chrome 105+, Safari
+   15.4+, Firefox 121+). For older engines we keep the same default look.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* ─── Outer bar (fixed to viewport) ────────────────────────────────────── */
+/* ─── Outer bar — default (anchored to bottom) ─────────────────────────── */
 
 .action-bar {
   position: fixed;
@@ -16,6 +31,10 @@
   width: min(960px, calc(100vw - 32px));
   pointer-events: none; /* re-enabled on the inner so the rest of the page is still clickable */
   animation: action-bar-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition:
+    top 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    bottom 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    max-width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @keyframes action-bar-in {
@@ -47,6 +66,7 @@
     0 2px 8px rgba(20, 20, 10, 0.10);
   box-sizing: border-box;
   overflow: hidden;
+  transition: padding 0.3s ease, gap 0.3s ease;
 }
 
 /* Slim gold accent line across the top — the "deck seam". */
@@ -76,6 +96,64 @@
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
     0 16px 40px rgba(0, 0, 0, 0.55),
     0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* ─── PENDING STATE: re-anchor to the TOP of the viewport ──────────────── */
+
+.action-bar:has(.action-bar__buttons--stacked) {
+  top: 12px;
+  bottom: auto;
+  width: min(880px, calc(100vw - 32px));
+  animation: action-bar-down 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes action-bar-down {
+  from {
+    transform: translateX(-50%) translateY(-24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__inner {
+  /* Compact: tighter padding, smaller gap, no oversized empty spaces. */
+  padding: 10px 14px;
+  gap: 12px;
+  border-radius: 16px;
+  /* Premium "deck" feel: more pronounced glass + accent ring */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 14px 40px rgba(20, 20, 10, 0.28),
+    0 3px 12px rgba(20, 20, 10, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+
+.theme-dark
+  .action-bar:has(.action-bar__buttons--stacked)
+  .action-bar__inner {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 18px 48px rgba(0, 0, 0, 0.65),
+    0 4px 14px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Hide the gold "deck seam" in pending mode (top seam is now a status strip). */
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__inner::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ruby) 20%,
+    var(--ruby-strong, #8a1424) 50%,
+    var(--ruby) 80%,
+    transparent 100%
+  );
+  opacity: 0.9;
 }
 
 /* ─── Turn pill (left side) ─────────────────────────────────────────────── */
@@ -142,6 +220,28 @@
   text-overflow: ellipsis;
 }
 
+/* Pending mode: pill becomes a compact badge on the left. */
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__turn {
+  min-width: 0;
+  max-width: none;
+  padding: 4px 10px;
+  gap: 0;
+  flex-direction: row;
+  align-items: center;
+  border-left-width: 3px;
+}
+
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__turn-label {
+  font-size: 9px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__turn-name {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 /* ─── Action cluster (right side) ───────────────────────────────────────── */
 
 .action-bar__buttons {
@@ -154,9 +254,15 @@
 }
 
 .action-bar__buttons--stacked {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
+  /* In the JSX this class is applied to the action cluster when there is a
+     pendingAction. We re-interpret it as a HORIZONTAL row in pending mode
+     (the .action-bar wrapper handles the positioning, the cluster handles
+     the inline composition). */
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .action-bar__waiting {
@@ -170,12 +276,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .action-bar__pending-card .action-card-reveal {
-  transform: scale(0.62);
+  transform: scale(0.5);
   transform-origin: left center;
-  margin: -32px 0;
+  margin: -52px 0;
+}
+
+.action-bar__pending-card .action-card-reveal__card {
+  width: 90px;
+  height: 128px;
+}
+
+.action-bar__pending-card .action-card-reveal__value {
+  font-size: 42px;
+}
+
+.action-bar__pending-card .action-card-reveal__label {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  margin-top: 4px;
 }
 
 .action-bar__pending-card .action-card-reveal__caption {
@@ -187,22 +309,28 @@
   color: var(--text-secondary);
   line-height: 1.3;
   text-align: left;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .action-bar__pending-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 10px;
+  flex-wrap: nowrap;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 .action-bar__pending-hint {
   font-size: 11px;
   color: var(--text-muted);
   font-style: italic;
-  max-width: 280px;
+  max-width: 220px;
   text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ─── Shared button base (used by the bar) ─────────────────────────────── */
@@ -338,6 +466,35 @@
   transform: translateY(0);
 }
 
+/* ─── "Choose me" button — premium ruby pill in pending mode ──────────── */
+
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-row .btn {
+  background: linear-gradient(180deg, var(--ruby), #8a1424);
+  color: #ffffff;
+  border: 1px solid #6a0e1c;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow:
+    0 4px 12px rgba(211, 58, 74, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  white-space: nowrap;
+}
+
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-row .btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #e8485a, #a01828);
+  box-shadow:
+    0 6px 16px rgba(211, 58, 74, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-row .btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
 /* ─── Tablet (901px - 1199px) ──────────────────────────────────────────── */
 
 @media (max-width: 1199px) {
@@ -353,14 +510,28 @@
     font-size: 13px;
   }
   .action-bar__pending-info {
-    display: none;
+    font-size: 11px;
   }
   .action-bar__pending-hint {
     display: none;
   }
+  .action-bar:has(.action-bar__buttons--stacked) {
+    width: min(820px, calc(100vw - 24px));
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal {
+    transform: scale(0.42);
+    margin: -60px 0;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal__card {
+    width: 76px;
+    height: 108px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal__value {
+    font-size: 34px;
+  }
 }
 
-/* ─── Mobile (< 900px) — bottom dock style ─────────────────────────────── */
+/* ─── Mobile (< 900px) — sticky top bar in pending mode, bottom dock in round ── */
 
 @media (max-width: 900px) {
   .action-bar {
@@ -413,6 +584,10 @@
     transform: scale(0.5);
     margin: -42px 0;
   }
+  .action-bar__pending-card .action-card-reveal__card {
+    width: 86px;
+    height: 122px;
+  }
   .action-bar__pending-row {
     justify-content: stretch;
   }
@@ -421,6 +596,51 @@
   }
   .action-bar__pending-hint {
     display: none;
+  }
+
+  /* Pending mode on mobile: sticky top bar (compact, single row). */
+  .action-bar:has(.action-bar__buttons--stacked) {
+    top: 8px;
+    bottom: auto;
+    width: 100vw;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__inner {
+    border-radius: 14px;
+    margin: 0 8px;
+    width: calc(100vw - 16px);
+    flex-wrap: nowrap;
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__inner::before {
+    left: 16px;
+    right: 16px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__turn {
+    flex: 0 0 auto;
+    max-width: 120px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card {
+    flex: 0 0 auto;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal {
+    transform: scale(0.4);
+    margin: -64px 0;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal__card {
+    width: 72px;
+    height: 102px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal__value {
+    font-size: 30px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-info {
+    flex: 1 1 auto;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-row {
+    flex: 0 0 auto;
   }
 }
 
@@ -434,5 +654,20 @@
   .btn--stay {
     padding: 12px 12px;
     font-size: 14px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__inner {
+    padding: 6px 8px;
+    gap: 8px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal {
+    transform: scale(0.34);
+    margin: -70px 0;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-card .action-card-reveal__card {
+    width: 60px;
+    height: 86px;
+  }
+  .action-bar:has(.action-bar__buttons--stacked) .action-bar__pending-info {
+    font-size: 9px;
   }
 }

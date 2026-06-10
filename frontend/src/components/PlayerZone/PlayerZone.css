@@ -24,16 +24,39 @@
     0 6px 20px var(--accent-soft);
 }
 
-/* ─── Targetable: ruby border ─── */
+/* ─── Targetable: ruby border + soft pulse so the user knows these are
+   now the "buttons" to pick a target (the ActionBar moved to the top). */
 .player-zone--target {
   border-color: var(--ruby);
   background: var(--ruby-soft);
   cursor: pointer;
+  animation: target-pulse 1.6s ease-in-out infinite;
 }
 
 .player-zone--target:hover {
   background: var(--ruby-soft);
-  box-shadow: 0 4px 12px var(--ruby-soft);
+  border-color: #8a1424;
+  box-shadow:
+    0 6px 18px rgba(211, 58, 74, 0.35),
+    0 0 0 2px rgba(211, 58, 74, 0.25);
+  transform: translateY(-2px);
+}
+
+.player-zone--target:active {
+  transform: translateY(0);
+}
+
+@keyframes target-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(211, 58, 74, 0.30),
+      0 4px 12px rgba(211, 58, 74, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(211, 58, 74, 0.45),
+      0 8px 22px rgba(211, 58, 74, 0.30);
+  }
 }
 
 /* ─── Stayed / Busted base states ─── */

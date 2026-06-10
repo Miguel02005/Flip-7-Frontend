@@ -70,7 +70,11 @@
 
 @media (max-width: 900px) {
   .game-page {
-    padding-bottom: 180px;
+    /* Slightly reduced from 180px: when the ActionBar moves to the top
+       (pending action) the extra bottom space is no longer needed and
+       left an awkward gap under the last row of cards. 140px still gives
+       enough room for the bottom-dock when the bar is anchored below. */
+    padding-bottom: 140px;
   }
   .game-page__nav-btn span:not(.btn__icon) {
     /* Collapse the text label on mobile — the icon is enough. */
